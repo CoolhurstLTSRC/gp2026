@@ -152,6 +152,8 @@ body {
 .loading{text-align:center;padding:24px;color:var(--fg-2);font-size:13px}
 /* ARRANGED BADGE */
 .arr-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--gold-dk);background:color-mix(in srgb,var(--gold) 12%,var(--surface));border:1px solid var(--gold);border-radius:5px;padding:3px 8px;margin-top:6px;}
+.played-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#1a6b2f;background:color-mix(in srgb,#3C6549 12%,var(--surface));border:1px solid #3C6549;border-radius:5px;padding:3px 8px;margin-top:6px;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .played-badge{color:#7fd99a;border-color:#6aaa7a;background:color-mix(in srgb,#6aaa7a 15%,var(--surface));}}
 /* ROUND FILTER */
 .round-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .rf-btn{padding:5px 11px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-2);cursor:pointer;transition:all .15s}
@@ -463,7 +465,13 @@ function buildR1(){
           <span>${c1 ? p1+': '+c1 : p1+': no number'}</span>
           <span>${c2 ? p2+': '+c2 : p2+': no number'}</span>
         </div>
-        ${getArranged(p1,p2) ? `<div class="arr-badge">📅 Arranged: ${getArranged(p1,p2)}</div>` : ''}
+        ${(()=>{
+          const res = getResult(p1,p2);
+          if(res) return `<div class="played-badge">✅ Played: ${res.winner} won ${res.playerScore}–${res.oppScore}</div>`;
+          const arr = getArranged(p1,p2);
+          if(arr) return `<div class="arr-badge">📅 Arranged: ${fmtWhen(arr)}</div>`;
+          return '';
+        })()}
       </div>
     </div>`;
   }).join('');
@@ -592,8 +600,9 @@ async function loadBoard(){
   }
 }
 
-// ─── ARRANGED INDEX (for draw indicators) ───
-let arrangedIndex = {}; // key: "p1|||p2" normalised
+// ─── ARRANGED + RESULTS INDEX (for draw indicators) ───
+let arrangedIndex = {};
+let resultsIndex  = {};
 
 async function loadArrangedIndex(){
   try {
@@ -604,7 +613,11 @@ async function loadArrangedIndex(){
       const k = makeKey(a.you, a.opp);
       arrangedIndex[k] = a.when;
     });
-    // Re-render draw cards with badges
+    resultsIndex = {};
+    (data.results||[]).forEach(r=>{
+      const k = makeKey(r.player, r.opp);
+      resultsIndex[k] = r;
+    });
     buildR1();
   } catch(e){}
 }
@@ -616,6 +629,9 @@ function makeKey(a,b){
 
 function getArranged(p1,p2){
   return arrangedIndex[makeKey(p1,p2)] || null;
+}
+function getResult(p1,p2){
+  return resultsIndex[makeKey(p1,p2)] || null;
 }
 
 // Load board when tab opened
@@ -673,11 +689,16 @@ function initForms() {
 // Fix timestamp display — handle ISO strings from sheet
 function fmtWhen(when) {
   if (!when) return '';
-  // Already formatted (e.g. "Tue 3 Nov, 19:00") — no Z or T
-  if (!when.includes('T') && !when.includes('Z')) return when;
+  const s = when.toString();
+  // Already a clean short string (e.g. "Tue 20 Oct, 19:00") — return as-is
+  // Detect by: no ISO T/Z, no long timezone text, reasonable length
+  if (!s.includes('T') && !s.includes('GMT') && !s.includes('UTC') && s.length < 30) return s;
+  // ISO or JS Date string — parse and reformat
   try {
-    return new Date(when).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-  } catch(e) { return when; }
+    const d = new Date(s);
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  } catch(e) { return s; }
 }
 
 // Init draw (after all functions defined)
