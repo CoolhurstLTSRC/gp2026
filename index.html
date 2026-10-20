@@ -195,8 +195,8 @@ body {
     <div class="card-ttl">Match Arranged</div>
     <div class="card-sub">Let us know once you've sorted a date — Anthony will add it to the Order of Play.</div>
     <form id="af" onsubmit="submitArrange(event)">
-      <div class="fg"><label>Your name</label><input id="a-you" type="text" placeholder="e.g. James Smith" autocomplete="name" required></div>
-      <div class="fg"><label>Opponent's name</label><input id="a-opp" type="text" placeholder="e.g. Sarah Jones" required></div>
+      <div class="fg"><label>Your name</label><select id="a-you" required><option value="">Select your name…</option></select></div>
+      <div class="fg"><label>Opponent's name</label><select id="a-opp" required><option value="">Select opponent…</option></select></div>
       <div class="frow">
         <div class="fg"><label>Round</label>
           <select id="a-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
@@ -218,8 +218,8 @@ body {
     <div class="card-ttl">Submit a Result</div>
     <div class="card-sub">Post your score once your match is done. Anthony will update the draw and issue next-round starting scores.</div>
     <form id="rf" onsubmit="submitResult(event)">
-      <div class="fg"><label>Your name</label><input id="r-you" type="text" placeholder="e.g. James Smith" autocomplete="name" required></div>
-      <div class="fg"><label>Opponent's name</label><input id="r-opp" type="text" placeholder="e.g. Sarah Jones" required></div>
+      <div class="fg"><label>Your name</label><select id="r-you" required><option value="">Select your name…</option></select></div>
+      <div class="fg"><label>Opponent's name</label><select id="r-opp" required><option value="">Select opponent…</option></select></div>
       <div class="fg"><label>Round</label>
         <select id="r-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
       </div>
@@ -565,7 +565,7 @@ async function loadBoard(){
         <div class="board-item">
           <div class="board-round">${a.round}</div>
           <div class="board-players">${a.you} v ${a.opp}</div>
-          <div class="board-when">${a.when}${a.court ? ' · '+a.court : ''}</div>
+          <div class="board-when">${fmtWhen(a.when)}${a.court ? ' · '+a.court : ''}</div>
         </div>`).join('');
     }
 
@@ -622,6 +622,62 @@ document.getElementById('t-board').addEventListener('click', loadBoard);
 // Load arranged index on page load so draw shows badges
 loadArrangedIndex();
 
+// ─── PLAYER LIST FOR FORMS ───
+const ALL_PLAYERS = [...new Set(R1.flatMap(m=>[m[0],m[2]]))].sort();
+
+function populateSelect(id, players) {
+  const sel = document.getElementById(id);
+  const current = sel.value;
+  // keep first placeholder option
+  while(sel.options.length > 1) sel.remove(1);
+  players.forEach(p => {
+    const o = document.createElement('option');
+    o.value = o.textContent = p;
+    sel.appendChild(o);
+  });
+  if(current) sel.value = current;
+}
+
+function initForms() {
+  ['a-you','a-opp','r-you','r-opp'].forEach(id => populateSelect(id, ALL_PLAYERS));
+
+  // When 'you' changes on arrange form, filter opponent to R1 partner
+  document.getElementById('a-you').addEventListener('change', function(){
+    const you = this.value;
+    const match = R1.find(m => m[0]===you || m[2]===you);
+    const oppSel = document.getElementById('a-opp');
+    if(match) {
+      const opp = match[0]===you ? match[2] : match[0];
+      oppSel.value = opp;
+    } else {
+      oppSel.value = '';
+    }
+  });
+
+  // Same for result form
+  document.getElementById('r-you').addEventListener('change', function(){
+    const you = this.value;
+    const match = R1.find(m => m[0]===you || m[2]===you);
+    const oppSel = document.getElementById('r-opp');
+    if(match) {
+      const opp = match[0]===you ? match[2] : match[0];
+      oppSel.value = opp;
+    } else {
+      oppSel.value = '';
+    }
+  });
+}
+
+// Fix timestamp display — handle ISO strings from sheet
+function fmtWhen(when) {
+  if (!when) return '';
+  // Already formatted (e.g. "Tue 3 Nov, 19:00") — no Z or T
+  if (!when.includes('T') && !when.includes('Z')) return when;
+  try {
+    return new Date(when).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  } catch(e) { return when; }
+}
+
 // Init draw (after all functions defined)
-buildR1(); buildByes();
+buildR1(); buildByes(); initForms();
 </script>
