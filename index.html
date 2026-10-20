@@ -195,14 +195,14 @@ body {
     <div class="card-ttl">Match Arranged</div>
     <div class="card-sub">Let us know once you've sorted a date — Anthony will add it to the Order of Play.</div>
     <form id="af" onsubmit="submitArrange(event)">
-      <div class="fg"><label>Your name</label><select id="a-you" required><option value="">Select your name…</option></select></div>
-      <div class="fg"><label>Opponent's name</label><select id="a-opp" required><option value="">Select opponent…</option></select></div>
+      <div class="fg"><label>Your name</label><select id="a-you"><option value="">Select your name…</option></select></div>
+      <div class="fg"><label>Opponent's name</label><select id="a-opp"><option value="">Select opponent…</option></select></div>
       <div class="frow">
         <div class="fg"><label>Round</label>
           <select id="a-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
         </div>
         <div class="fg"><label>Date &amp; time</label><input id="a-dt" type="datetime-local" required></div>
-        <div class="fg"><label>Court number</label><select id="a-court"><option value="">Not yet confirmed</option><option>Court 1</option><option>Court 2</option><option>Court 3</option><option>Court 4</option></select></div>
+        <div class="fg"><label>Court number</label><select id="a-court"><option value="">Not yet confirmed</option><option>Court 1</option><option>Court 2</option><option>Court 3</option><option>Court 4</option><option>Court 5</option><option>Court 6</option><option>Court 7</option></select></div>
       </div>
       <button type="submit" class="btn btn-g">✓ Notify Anthony</button>
     </form>
@@ -218,8 +218,8 @@ body {
     <div class="card-ttl">Submit a Result</div>
     <div class="card-sub">Post your score once your match is done. Anthony will update the draw and issue next-round starting scores.</div>
     <form id="rf" onsubmit="submitResult(event)">
-      <div class="fg"><label>Your name</label><select id="r-you" required><option value="">Select your name…</option></select></div>
-      <div class="fg"><label>Opponent's name</label><select id="r-opp" required><option value="">Select opponent…</option></select></div>
+      <div class="fg"><label>Your name</label><select id="r-you"><option value="">Select your name…</option></select></div>
+      <div class="fg"><label>Opponent's name</label><select id="r-opp"><option value="">Select opponent…</option></select></div>
       <div class="fg"><label>Round</label>
         <select id="r-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
       </div>
@@ -501,6 +501,7 @@ async function submitArrange(e){
   const you = document.getElementById('a-you').value.trim();
   const opp = document.getElementById('a-opp').value.trim();
   const rnd = document.getElementById('a-rnd').value;
+  if(!you || !opp || !rnd){ alert('Please fill in your name, opponent and round.'); return; }
   const dt    = document.getElementById('a-dt').value;
   const court = document.getElementById('a-court').value;
   const when  = dt ? new Date(dt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '(TBC)';
@@ -530,6 +531,7 @@ async function submitResult(e){
   const you   = document.getElementById('r-you').value.trim();
   const opp   = document.getElementById('r-opp').value.trim();
   const rnd   = document.getElementById('r-rnd').value;
+  if(!you || !opp || !rnd){ alert('Please fill in your name, opponent and round.'); return; }
   const ys    = document.getElementById('r-ys').value;
   const os    = document.getElementById('r-os').value;
   const notes = document.getElementById('r-notes').value.trim();
