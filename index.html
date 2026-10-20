@@ -202,10 +202,11 @@ body {
           <select id="a-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
         </div>
         <div class="fg"><label>Date &amp; time</label><input id="a-dt" type="datetime-local" required></div>
+        <div class="fg"><label>Court number</label><select id="a-court"><option value="">Not yet confirmed</option><option>Court 1</option><option>Court 2</option><option>Court 3</option><option>Court 4</option></select></div>
       </div>
       <button type="submit" class="btn btn-g">✓ Notify Anthony</button>
     </form>
-    <div class="hint">This opens your mail app with the details pre-filled — just hit send.</div>
+    <div class="hint">Let us know once you've sorted a date and Anthony will add it to the Order of Play. Any questions, contact Anthony at squashcoordinator@coolhurst.co.uk</div>
     <div class="ok" id="a-ok">✓ Submitted! Anthony will add it to the Order of Play.</div>
     <div id="a-err" style="display:none;color:#c0392b;font-size:13px;margin-top:8px;padding:8px;background:#fdf0ef;border-radius:6px"></div>
   </div>
@@ -229,8 +230,8 @@ body {
       <div class="fg"><label>Notes (optional)</label><textarea id="r-notes" rows="2" placeholder="e.g. great match, went to 99-99!"></textarea></div>
       <button type="submit" class="btn btn-a">Submit result</button>
     </form>
-    <div class="hint">Opens your mail app with the result pre-filled — just hit send.</div>
-    <div class="ok" id="r-ok">Result ready — just hit send in your mail app. Thanks!</div>
+    <div class="hint">Submit your score once your match is done — Anthony will verify and update the draw. Any questions, contact Anthony at squashcoordinator@coolhurst.co.uk</div>
+    <div class="ok" id="r-ok">✓ Result submitted! Anthony will approve and update the draw shortly.</div>
   </div>
 </div>
 
@@ -500,8 +501,9 @@ async function submitArrange(e){
   const you = document.getElementById('a-you').value.trim();
   const opp = document.getElementById('a-opp').value.trim();
   const rnd = document.getElementById('a-rnd').value;
-  const dt  = document.getElementById('a-dt').value;
-  const when = dt ? new Date(dt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '(TBC)';
+  const dt    = document.getElementById('a-dt').value;
+  const court = document.getElementById('a-court').value;
+  const when  = dt ? new Date(dt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '(TBC)';
 
   const btn = e.target.querySelector('button[type=submit]');
   btn.disabled = true; btn.textContent = 'Sending…';
@@ -511,7 +513,7 @@ async function submitArrange(e){
     await fetch(SCRIPT_URL, {
       method:'POST',
       mode:'no-cors',
-      body: JSON.stringify({action:'arrange', you, opp, round:rnd, when})
+      body: JSON.stringify({action:'arrange', you, opp, round:rnd, when, court})
     });
     document.getElementById('a-ok').style.display='block';
     document.getElementById('af').reset();
@@ -553,16 +555,17 @@ async function loadBoard(){
     const resp = await fetch(SCRIPT_URL+'?action=draw');
     const data = await resp.json();
 
-    // Arranged
+    // Arranged — only approved ones on Order of Play
     const aOut = document.getElementById('arranged-out');
-    if(!data.arranged || data.arranged.length===0){
-      aOut.innerHTML = '<div class="empty"><div class="ico">📋</div>No matches arranged yet — be the first!</div>';
+    const approvedArr = (data.arranged||[]).filter(a=>a.approved);
+    if(approvedArr.length===0){
+      aOut.innerHTML = '<div class="empty"><div class="ico">📋</div>No matches confirmed yet — check back soon!</div>';
     } else {
-      aOut.innerHTML = data.arranged.map(a=>`
+      aOut.innerHTML = approvedArr.map(a=>`
         <div class="board-item">
           <div class="board-round">${a.round}</div>
           <div class="board-players">${a.you} v ${a.opp}</div>
-          <div class="board-when">${a.when}</div>
+          <div class="board-when">${a.when}${a.court ? ' · '+a.court : ''}</div>
         </div>`).join('');
     }
 
