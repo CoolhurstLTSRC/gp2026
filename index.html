@@ -1,0 +1,624 @@
+<title>Gareth Pugh 100 — 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --green:     #3C6549;
+  --green-dk:  #2a4a34;
+  --green-lt:  #eaf3ec;
+  --gold:      #C8A951;
+  --gold-dk:   #a88630;
+  --cream-dk:  #e0d9cd;
+  --fg:        #1a2e1f;
+  --fg-2:      #4a5e50;
+  --surface:   #ffffff;
+  --surface-2: #f5f2ec;
+  --border:    #d5cfc3;
+  --r:         9px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --green:     #6aaa7a; --green-dk: #3a6648; --green-lt: #162019;
+    --gold:      #d9be7a; --gold-dk:  #C8A951;
+    --cream-dk:  #111a13; --fg: #e4ede6; --fg-2: #7fa48a;
+    --surface:   #1e2b21; --surface-2: #162019; --border: #2b3d2f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --green: #6aaa7a; --green-dk: #3a6648; --green-lt: #162019;
+  --gold: #d9be7a; --gold-dk: #C8A951;
+  --cream-dk: #111a13; --fg: #e4ede6; --fg-2: #7fa48a;
+  --surface: #1e2b21; --surface-2: #162019; --border: #2b3d2f;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body {
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--cream-dk); color:var(--fg); font-size:14px; line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0;
+}
+/* HEADER */
+.hdr {
+  background:var(--green-dk);
+  margin-left:max(-16px,calc(-1*env(safe-area-inset-left,0px)));
+  margin-right:max(-16px,calc(-1*env(safe-area-inset-right,0px)));
+  padding:14px max(20px,env(safe-area-inset-right,0px)) 14px max(20px,env(safe-area-inset-left,0px));
+  display:flex; align-items:center; gap:12px;
+}
+.hdr-badge {
+  width:40px;height:40px;border-radius:50%;
+  background:var(--gold);display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--green-dk);flex-shrink:0;
+}
+.hdr-text h1{font-size:15px;font-weight:700;color:#fff;line-height:1.2}
+.hdr-text p{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+/* TABS */
+.tabs {
+  position:sticky;top:0;z-index:10;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  margin-left:max(-16px,calc(-1*env(safe-area-inset-left,0px)));
+  margin-right:max(-16px,calc(-1*env(safe-area-inset-right,0px)));
+  padding:0 max(16px,env(safe-area-inset-left,0px));
+  display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.tab {
+  flex-shrink:0;padding:11px 13px;
+  font-family:inherit;font-size:13px;font-weight:600;color:var(--fg-2);
+  background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;
+  transition:color .15s;white-space:nowrap;
+}
+.tab.on{color:var(--green);border-bottom-color:var(--gold)}
+/* MAIN */
+.main{max-width:640px;margin:0 auto;padding-block:18px}
+.panel{display:none}.panel.on{display:block}
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card-ttl{font-size:15px;font-weight:700;margin-bottom:3px}
+.card-sub{font-size:12px;color:var(--fg-2);margin-bottom:14px}
+/* FORM */
+.fg{margin-bottom:11px}
+.fg label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);margin-bottom:4px}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:9px 11px;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--surface-2);color:var(--fg);
+  font-family:inherit;font-size:14px;outline:none;transition:border-color .15s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--green)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:440px){.frow{grid-template-columns:1fr}}
+.btn{
+  width:100%;padding:10px 16px;border-radius:7px;border:none;
+  font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:opacity .15s,transform .1s;
+}
+.btn:active{transform:scale(.98)}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{opacity:.88}
+.btn-a{background:var(--gold);color:var(--green-dk)}.btn-a:hover{opacity:.88}
+.hint{background:var(--surface-2);border:1px dashed var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--fg-2);line-height:1.55;margin-top:9px}
+.ok{display:none;background:var(--green-lt);border:1px solid var(--green);border-radius:6px;padding:11px;font-size:13px;font-weight:500;color:var(--green);text-align:center;margin-top:10px}
+/* DRAW */
+.round-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--fg-2);padding:14px 0 7px}
+.match-list{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.mc{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:10px 13px;display:grid;
+  grid-template-columns:30px 1fr 10px 1fr 30px;
+  align-items:center;gap:5px;font-size:13px;cursor:default;
+}
+.mc.bye{opacity:.5;grid-template-columns:1fr;font-size:12px;color:var(--fg-2);padding:8px 13px}
+.chip{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--gold-dk);text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+.vdot{font-size:10px;font-weight:700;color:var(--fg-2);text-align:center}
+.pn{font-weight:500;line-height:1.3;min-width:0}
+.pn.r{text-align:right}
+.mc.hi{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,var(--surface))}
+.search-row{display:flex;gap:8px;margin-bottom:11px;align-items:center}
+.search-row input{flex:1;padding:8px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--fg);font-family:inherit;font-size:13px;outline:none}
+.search-row input:focus{border-color:var(--green)}
+.cnt{font-size:11px;font-weight:600;color:var(--fg-2);white-space:nowrap}
+/* CONTACT BUTTON */
+.contact-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:600;color:var(--green);
+  background:var(--green-lt);border:1px solid var(--green);
+  border-radius:5px;padding:3px 8px;cursor:pointer;
+  text-decoration:none;white-space:nowrap;
+  transition:opacity .15s;
+}
+.contact-btn:hover{opacity:.8}
+.mc-detail{display:none;padding:8px 13px 10px;background:var(--surface-2);border-top:1px solid var(--border);border-radius:0 0 var(--r) var(--r);font-size:12px;color:var(--fg-2);line-height:1.6}
+.mc-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;overflow:hidden}
+.mc-wrap .mc{border:none;border-radius:0;margin:0}
+.mc-wrap.open .mc-detail{display:block}
+.mc-wrap.hi .mc{border-left:3px solid var(--gold)}
+/* BOARD */
+.board-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;margin-bottom:7px}
+.board-round{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--fg-2);margin-bottom:2px}
+.board-players{font-size:14px;font-weight:600}
+.board-when{font-size:12px;color:var(--fg-2);margin-top:1px}
+.result-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
+.result-round{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);min-width:56px}
+.result-match{flex:1;min-width:0}
+.result-players{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-score{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-dk);font-weight:500}
+.empty{text-align:center;padding:32px 20px;color:var(--fg-2);font-size:13px}
+.empty .ico{font-size:26px;margin-bottom:7px}
+.loading{text-align:center;padding:24px;color:var(--fg-2);font-size:13px}
+/* ARRANGED BADGE */
+.arr-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--gold-dk);background:color-mix(in srgb,var(--gold) 12%,var(--surface));border:1px solid var(--gold);border-radius:5px;padding:3px 8px;margin-top:6px;}
+/* ROUND FILTER */
+.round-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.rf-btn{padding:5px 11px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-2);cursor:pointer;transition:all .15s}
+.rf-btn.on{background:var(--green);color:#fff;border-color:var(--green)}
+</style>
+
+<header class="hdr">
+  <div class="hdr-badge">GP</div>
+  <div class="hdr-text">
+    <h1>Gareth Pugh 100 — 2026</h1>
+    <p>Coolhurst Tennis &amp; Squash Club · 115 players</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab on" id="t-draw"    onclick="show('draw',this)">The Draw</button>
+  <button class="tab"    id="t-arrange" onclick="show('arrange',this)">Match Arranged</button>
+  <button class="tab"    id="t-result"  onclick="show('result',this)">Submit Result</button>
+  <button class="tab"    id="t-board"   onclick="show('board',this)">Order of Play</button>
+</nav>
+
+<main class="main">
+
+<!-- ═══ DRAW ═══ -->
+<div id="p-draw" class="panel on">
+  <div class="search-row">
+    <input type="search" id="dsearch" placeholder="Search your name…" oninput="filterDraw(this.value)" autocomplete="off">
+    <span class="cnt" id="dcnt">51 matches</span>
+  </div>
+  <div class="round-filter" id="round-filter">
+    <button class="rf-btn on" onclick="setRound('r1',this)">Round 1</button>
+    <button class="rf-btn" onclick="setRound('byes',this)">Byes</button>
+  </div>
+  <div id="r1-wrap"><div class="round-lbl">Round 1 — by 4th November</div><div class="match-list" id="r1-list"></div></div>
+  <div id="bye-wrap" hidden><div class="round-lbl">Byes — advance to Round 2</div><div class="match-list" id="bye-list"></div></div>
+</div>
+
+<!-- ═══ ARRANGE ═══ -->
+<div id="p-arrange" class="panel">
+  <div class="card">
+    <div class="card-ttl">Match Arranged</div>
+    <div class="card-sub">Let us know once you've sorted a date — Anthony will add it to the Order of Play.</div>
+    <form id="af" onsubmit="submitArrange(event)">
+      <div class="fg"><label>Your name</label><input id="a-you" type="text" placeholder="e.g. James Smith" autocomplete="name" required></div>
+      <div class="fg"><label>Opponent's name</label><input id="a-opp" type="text" placeholder="e.g. Sarah Jones" required></div>
+      <div class="frow">
+        <div class="fg"><label>Round</label>
+          <select id="a-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
+        </div>
+        <div class="fg"><label>Date &amp; time</label><input id="a-dt" type="datetime-local" required></div>
+      </div>
+      <button type="submit" class="btn btn-g">✓ Notify Anthony</button>
+    </form>
+    <div class="hint">This opens your mail app with the details pre-filled — just hit send.</div>
+    <div class="ok" id="a-ok">✓ Submitted! Anthony will add it to the Order of Play.</div>
+    <div id="a-err" style="display:none;color:#c0392b;font-size:13px;margin-top:8px;padding:8px;background:#fdf0ef;border-radius:6px"></div>
+  </div>
+</div>
+
+<!-- ═══ RESULT ═══ -->
+<div id="p-result" class="panel">
+  <div class="card">
+    <div class="card-ttl">Submit a Result</div>
+    <div class="card-sub">Post your score once your match is done. Anthony will update the draw and issue next-round starting scores.</div>
+    <form id="rf" onsubmit="submitResult(event)">
+      <div class="fg"><label>Your name</label><input id="r-you" type="text" placeholder="e.g. James Smith" autocomplete="name" required></div>
+      <div class="fg"><label>Opponent's name</label><input id="r-opp" type="text" placeholder="e.g. Sarah Jones" required></div>
+      <div class="fg"><label>Round</label>
+        <select id="r-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Your score</label><input id="r-ys" type="number" placeholder="100" min="0" max="200" required></div>
+        <div class="fg"><label>Opponent score</label><input id="r-os" type="number" placeholder="84" min="0" max="200" required></div>
+      </div>
+      <div class="fg"><label>Notes (optional)</label><textarea id="r-notes" rows="2" placeholder="e.g. great match, went to 99-99!"></textarea></div>
+      <button type="submit" class="btn btn-a">Submit result</button>
+    </form>
+    <div class="hint">Opens your mail app with the result pre-filled — just hit send.</div>
+    <div class="ok" id="r-ok">Result ready — just hit send in your mail app. Thanks!</div>
+  </div>
+</div>
+
+<!-- ═══ BOARD ═══ -->
+<div id="p-board" class="panel">
+  <div class="card">
+    <div class="card-ttl">Arranged Matches</div>
+    <div class="card-sub">Confirmed as arranged — updated by Anthony.</div>
+    <div id="arranged-out"><div class="loading">Loading…</div></div>
+  </div>
+  <div class="card">
+    <div class="card-ttl">Results</div>
+    <div class="card-sub">Confirmed results — approved by Anthony.</div>
+    <div id="results-out"><div class="loading">Loading…</div></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfJkT6N2PN5V3O93pW7HpR5gAK87kFXTusSfPfeXAvUMUW5stwuXnmcLpPQl1CONQasA/exec';
+const ADMIN_EMAIL = 'squashcoordinator@coolhurst.co.uk';
+
+// ─── DRAW DATA ───
+const R1 = [
+  ["Dan Taylor",13,"Alex Burden",87],["Tom Wills",24,"Barry Knight",76],
+  ["Yoav Caspi",8,"Laura Rakos",92],["Ajay Duggal",63,"Justin Parsons",47],
+  ["David Sunley",38,"Sam O'Neill",72],["Ashley Rice",38,"Brian Rohan",72],
+  ["Rowley Sword",90,"Will Brown",10],["David Robertson",19,"Jonathan Dando",81],
+  ["Alexander Jan",61,"Monish Malik",49],["Matt Cartwright",63,"Ian Ho",47],
+  ["Mike Koreneff",78,"Jim Harrison",22],["Charlie Logan",46,"Ben Davis",64],
+  ["Thomas Selway Spencer",11,"Lucy Johnson",89],["Sebastian Keuchel",15,"Amy McNay",85],
+  ["Sam Kapila",11,"Lara Yusfin",89],["Carlo Cresto-Dina",48,"Pippa Penn",52],
+  ["Annette Caseley Chapman",28,"Ralph Harrison",72],["Wendy Levin",25,"Philip Hull",75],
+  ["Simon Millman",6,"Sophie Caruana",94],["Oliver Wilson",58,"Dodo Levin",52],
+  ["Hamish Gilder",41,"James Penn",69],["Lee Holden",17,"Jon Neill",83],
+  ["Vita P",37,"Sean Bartlett",63],["Andrew Syk",51,"Ashley Marshall",59],
+  ["Martyna Blass",81,"Alan Salama",19],["Andrei Yusfin",40,"Peter Sweeney",60],
+  ["Marton Csikos",70,"Jakob von Kalckreuth",40],["Jimmy Ayad",64,"Michael Stavrinou",46],
+  ["Wills McGuigan",12,"Jack Barrett",88],["Paul Davies",59,"Henry Penn",51],
+  ["John Punter",61,"Felix Wolf",39],["Dylan Rice",67,"John O'Brien",43],
+  ["Owen Jacob",62,"John Hart",48],["Peter Hilton",59,"Georgina Brown",51],
+  ["Arthur Newman",33,"Diego Keuchel",77],["Stuart Miller",44,"David Choi",66],
+  ["Adam Twinn",72,"Christopher Rigby",38],["Steph Highwood",17,"Seun Adeyoola",83],
+  ["Andrew Symmons",69,"Paddy Joyce",51],["Alex Boerescu",91,"Zach Moss",9],
+  ["Peter Myers",42,"James Ayliffe",68],["James Wilson",13,"Gareth Cooney",87],
+  ["Graham Stegmann",83,"Anthony Belcher",17],["Danny Hilton",45,"Ramon Bloomberg",65],
+  ["Alex Worrall",17,"James Brindle",83],["Tony Hulse",75,"Richard Cartmel",25],
+  ["Matt Lyons",39,"Lewis Lenssen",71],["Will Brett",76,"Florie Smith",24],
+  ["Anna Wood",88,"Martin Cripps",12],["Duncan Rowden",58,"Paul Giltinan",52],
+  ["Stephen Morley",80,"Thomas Horncastle",20]
+];
+const BYES = ["Damien Patel","Daniel Ambrose","Idan Caspi","Elliot Higgins",
+  "Simon Farrell","Philip Rossiter","Dick Bowman","Nathan Bigaignon",
+  "Chris Henley","Daniel Pang","Mike Dalton","Chris Pendlebury","Nick Healy"];
+
+// Contact numbers — real numbers from Player Contact Info sheet
+const CONTACTS = {
+  "Adam Twinn":"07840698565",
+  "Ajay Duggal":"07794872484",
+  "Alan Salama":"07739986304",
+  "Alex Boerescu":"07835747738",
+  "Alex Burden":"07899138331",
+  "Alex Worrall":"07455079759",
+  "Alexander Jan":"07860634710",
+  "Amy McNay":"07884611016",
+  "Andrei Yusfin":"07920262120",
+  "Andrew Syk":"07883069557",
+  "Andrew Symmons":"07584287129",
+  "Anna Wood":"07775544359",
+  "Annette Caseley Chapman":"07720402470",
+  "Anthony Belcher":"07967828932",
+  "Arthur Newman":"07496733590",
+  "Ashley Marshall":"07759897304",
+  "Ashley Rice":"07895618154",
+  "Barry Knight":"07715011062",
+  "Ben Davis":"07504097496",
+  "Brian Rohan":"07448188538",
+  "Carlo Cresto-Dina":"07817551344",
+  "Charlie Logan":"07785731226",
+  "Chris Henley":"07798845539",
+  "Chris Pendlebury":"07701070781",
+  "Christopher Rigby":"07751234684",
+  "Damien Patel":"07815518670",
+  "Dan Taylor":"07986533393",
+  "Daniel Ambrose":"07967849553",
+  "Daniel Pang":"07939566932",
+  "Danny Hilton":"07805832882",
+  "David Choi":"07880520034",
+  "David Robertson":"07841583721",
+  "David Sunley":"07435689394",
+  "Dick Bowman":"07808722060",
+  "Diego Keuchel":"07454607908",
+  "Dodo Levin":"07971210725",
+  "Duncan Rowden":"07737662617",
+  "Dylan Rice":"07377397403",
+  "Elliot Higgins":"07525453090",
+  "Felix Wolf":"+4917657674097",
+  "Florie Smith":"07717096996",
+  "Gareth Cooney":"07715654083",
+  "Georgina Brown":"07776756060",
+  "Graham Stegmann":"07742103136",
+  "Hamish Gilder":"07585232723",
+  "Henry Penn":"07771514097",
+  "Ian Ho":"07808105750",
+  "Idan Caspi":"07779083531",
+  "Jack Barrett":"07548714289",
+  "Jakob von Kalckreuth":"07900900420",
+  "James Ayliffe":"07717297073",
+  "James Brindle":"07510740414",
+  "James Penn":"07743379580",
+  "James Wilson":"07876477866",
+  "Jim Harrison":"07817428697",
+  "Jimmy Ayad":"+33625940849",
+  "John Hart":"07473872603",
+  "John O'Brien":"07973744252",
+  "John Punter":"07803619613",
+  "Jon Neill":"07758783093",
+  "Jonathan Dando":"07595304164",
+  "Justin Parsons":"07872194758",
+  "Lara Yusfin":"07590541832",
+  "Laura Rakos":"07545758890",
+  "Lee Holden":"07908648006",
+  "Lewis Lenssen":"07850878832",
+  "Lucy Johnson":"07913023451",
+  "Martin Cripps":"07815296113",
+  "Marton Csikos":"+36302098889",
+  "Martyna Blass":"07531078356",
+  "Matt Cartwright":"07730513732",
+  "Matt Lyons":"07958628688",
+  "Michael Stavrinou":"07765410473",
+  "Mike Dalton":"07484652840",
+  "Mike Koreneff":"07838286638",
+  "Monish Malik":"07493157934",
+  "Nathan Bigaignon":"07432851308",
+  "Nick Healy":"07966154358",
+  "Oliver Wilson":"07808180937",
+  "Owen Jacob":"07540846388",
+  "Paddy Joyce":"07825314255",
+  "Paul Davies":"07471638791",
+  "Paul Giltinan":"07388590336",
+  "Peter Hilton":"07976884138",
+  "Peter Myers":"07985294499",
+  "Peter Sweeney":"07437339399",
+  "Philip Hull":"02088810778",
+  "Philip Rossiter":"07873909018",
+  "Pippa Penn":"07743127692",
+  "Ralph Harrison":"07702047734",
+  "Ramon Bloomberg":"07864050272",
+  "Richard Cartmel":"07823337529",
+  "Rowley Sword":"07921786784",
+  "Sam Kapila":"07476088525",
+  "Sam O'Neill":"07570986690",
+  "Sean Bartlett":"07985345595",
+  "Sebastian Keuchel":"07985949536",
+  "Seun Adeyoola":"07894762894",
+  "Simon Farrell":"07532483514",
+  "Simon Millman":"07915641756",
+  "Sophie Caruana":"07596227901",
+  "Steph Highwood":"07990985063",
+  "Stephen Morley":"07946399565",
+  "Stuart Miller":"07305224032",
+  "Thomas Horncastle":"07397955799",
+  "Thomas Selway Spencer":"07989850569",
+  "Tom Wills":"07535538138",
+  "Tony Hulse":"07802608580",
+  "Vita P":"07898779425",
+  "Wendy Levin":"07538792992",
+  "Will Brett":"07979696265",
+  "Will Brown":"07796670166",
+  "Wills McGuigan":"07787530805",
+  "Yoav Caspi":"07779083531",
+  "Zach Moss":"07712898035"
+};
+
+// Normalise a number to UK format
+function fmtNum(n){
+  if(!n) return null;
+  n = n.toString().replace(/\s/g,'').replace(/^44/,'0').replace(/^\+44/,'0');
+  if(n.startsWith('0')) return n;
+  if(n.length===10) return '0'+n;
+  return n;
+}
+
+let currentRound = 'r1';
+let searchQ = '';
+
+// ─── TABS ───
+function show(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+// ─── ROUND FILTER ───
+function setRound(r, btn){
+  currentRound = r;
+  document.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('r1-wrap').hidden = (r !== 'r1');
+  document.getElementById('bye-wrap').hidden = (r !== 'byes');
+  filterDraw(searchQ);
+}
+
+// ─── BUILD DRAW ───
+function mkContact(name){
+  const raw = CONTACTS[name];
+  const num = raw ? fmtNum(raw) : null;
+  if(!num) return '';
+  return `<a class="contact-btn" href="tel:${num}">${num}</a>`;
+}
+
+function buildR1(){
+  const list = document.getElementById('r1-list');
+  list.innerHTML = R1.map((m,i)=>{
+    const [p1,s1,p2,s2] = m;
+    const c1 = mkContact(p1), c2 = mkContact(p2);
+    return `<div class="mc-wrap" id="mw${i}" onclick="toggleMatch(${i})">
+      <div class="mc" data-p1="${p1.toLowerCase()}" data-p2="${p2.toLowerCase()}">
+        <span class="chip">${s1}</span>
+        <span class="pn">${p1}</span>
+        <span class="vdot">v</span>
+        <span class="pn r">${p2}</span>
+        <span class="chip">${s2}</span>
+      </div>
+      <div class="mc-detail">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span>${c1 ? p1+': '+c1 : p1+': no number'}</span>
+          <span>${c2 ? p2+': '+c2 : p2+': no number'}</span>
+        </div>
+        ${getArranged(p1,p2) ? `<div class="arr-badge">📅 Arranged: ${getArranged(p1,p2)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildByes(){
+  const list = document.getElementById('bye-list');
+  list.innerHTML = BYES.map(n=>`<div class="mc bye">${n} — advances to Round 2</div>`).join('');
+}
+
+function toggleMatch(i){
+  const wrap = document.getElementById('mw'+i);
+  wrap.classList.toggle('open');
+}
+
+function filterDraw(q){
+  searchQ = q;
+  const lq = q.toLowerCase().trim();
+  const all = document.querySelectorAll('#r1-list .mc-wrap');
+  let shown = 0;
+  all.forEach(c=>{
+    const p1 = c.querySelector('.mc').dataset.p1||'';
+    const p2 = c.querySelector('.mc').dataset.p2||'';
+    const match = !lq || p1.includes(lq) || p2.includes(lq);
+    c.hidden = !match;
+    if(match) shown++;
+    if(match && lq) c.classList.add('hi'); else c.classList.remove('hi');
+  });
+  document.getElementById('dcnt').textContent = lq ? `${shown} match${shown!==1?'es':''}` : '51 matches';
+}
+
+// ─── SUBMIT ARRANGE ───
+async function submitArrange(e){
+  e.preventDefault();
+  const you = document.getElementById('a-you').value.trim();
+  const opp = document.getElementById('a-opp').value.trim();
+  const rnd = document.getElementById('a-rnd').value;
+  const dt  = document.getElementById('a-dt').value;
+  const when = dt ? new Date(dt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '(TBC)';
+
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  const errEl = document.getElementById('a-err');
+  errEl.style.display='none';
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      body: JSON.stringify({action:'arrange', you, opp, round:rnd, when})
+    });
+    document.getElementById('a-ok').style.display='block';
+    document.getElementById('af').reset();
+  } catch(err){
+    errEl.textContent = 'Error: '+err.message;
+    errEl.style.display='block';
+  }
+  btn.disabled = false; btn.textContent = '✓ Notify Anthony';
+}
+
+// ─── SUBMIT RESULT ───
+async function submitResult(e){
+  e.preventDefault();
+  const you   = document.getElementById('r-you').value.trim();
+  const opp   = document.getElementById('r-opp').value.trim();
+  const rnd   = document.getElementById('r-rnd').value;
+  const ys    = document.getElementById('r-ys').value;
+  const os    = document.getElementById('r-os').value;
+  const notes = document.getElementById('r-notes').value.trim();
+  const winner = parseInt(ys)>parseInt(os) ? you : opp;
+
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      body: JSON.stringify({action:'result', you, opp, round:rnd, yourScore:ys, oppScore:os, winner, notes})
+    });
+  } catch(err){}
+  document.getElementById('r-ok').style.display='block';
+  document.getElementById('rf').reset();
+  btn.disabled = false; btn.textContent = '✓ Submit Result';
+}
+
+// ─── LOAD BOARD FROM SHEET ───
+async function loadBoard(){
+  try {
+    const resp = await fetch(SCRIPT_URL+'?action=draw');
+    const data = await resp.json();
+
+    // Arranged
+    const aOut = document.getElementById('arranged-out');
+    if(!data.arranged || data.arranged.length===0){
+      aOut.innerHTML = '<div class="empty"><div class="ico">📋</div>No matches arranged yet — be the first!</div>';
+    } else {
+      aOut.innerHTML = data.arranged.map(a=>`
+        <div class="board-item">
+          <div class="board-round">${a.round}</div>
+          <div class="board-players">${a.you} v ${a.opp}</div>
+          <div class="board-when">${a.when}</div>
+        </div>`).join('');
+    }
+
+    // Results
+    const rOut = document.getElementById('results-out');
+    if(!data.results || data.results.length===0){
+      rOut.innerHTML = '<div class="empty"><div class="ico">🎾</div>No results yet — first round deadline is 4th November.</div>';
+    } else {
+      rOut.innerHTML = data.results.map(r=>`
+        <div class="result-item">
+          <span class="result-round">${r.round}</span>
+          <div class="result-match">
+            <div class="result-players">${r.player} v ${r.opp}</div>
+            <div style="font-size:12px;color:var(--fg-2)">Winner: <strong>${r.winner}</strong></div>
+          </div>
+          <span class="result-score">${r.playerScore}–${r.oppScore}</span>
+        </div>`).join('');
+    }
+  } catch(err){
+    document.getElementById('arranged-out').innerHTML = '<div class="empty">Could not load data — try refreshing.</div>';
+    document.getElementById('results-out').innerHTML = '';
+  }
+}
+
+// ─── ARRANGED INDEX (for draw indicators) ───
+let arrangedIndex = {}; // key: "p1|||p2" normalised
+
+async function loadArrangedIndex(){
+  try {
+    const resp = await fetch(SCRIPT_URL+'?action=draw');
+    const data = await resp.json();
+    arrangedIndex = {};
+    (data.arranged||[]).forEach(a=>{
+      const k = makeKey(a.you, a.opp);
+      arrangedIndex[k] = a.when;
+    });
+    // Re-render draw cards with badges
+    buildR1();
+  } catch(e){}
+}
+
+function makeKey(a,b){
+  const names = [a,b].map(n=>n.toLowerCase().trim()).sort();
+  return names.join('|||');
+}
+
+function getArranged(p1,p2){
+  return arrangedIndex[makeKey(p1,p2)] || null;
+}
+
+// Load board when tab opened
+document.getElementById('t-board').addEventListener('click', loadBoard);
+
+// Load arranged index on page load so draw shows badges
+loadArrangedIndex();
+
+// Init draw (after all functions defined)
+buildR1(); buildByes();
+</script>
