@@ -137,7 +137,7 @@ html, body {
 .mc-badge.played { color: #7fd99a; }
 .mc-badge.arranged { color: var(--gold); }
 
-/* ── ORDER OF PLAY ── */
+/* ── Schedule ── */
 .oop-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; }
 .oop-item {
   background: var(--surface);
@@ -233,10 +233,10 @@ html, body {
       <div class="draw-grid" id="draw-grid"></div>
     </div>
 
-    <!-- ORDER OF PLAY -->
+    <!-- Schedule -->
     <div class="section">
       <div class="sec-hdr">
-        <h2>Order of Play</h2>
+        <h2>Schedule</h2>
         <div class="sec-line"></div>
       </div>
       <div class="oop-list" id="oop-list">
@@ -374,7 +374,7 @@ function renderDraw() {
   }).join('');
 }
 
-// ── ORDER OF PLAY ──
+// ── Schedule ──
 function renderOOP(data) {
   const el = document.getElementById('oop-list');
   const approved = (data.arranged||[]).filter(a=>a.approved);
