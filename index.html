@@ -172,7 +172,7 @@ body {
   <button class="tab on" id="t-draw"    onclick="show('draw',this)">The Draw</button>
   <button class="tab"    id="t-arrange" onclick="show('arrange',this)">Match Arranged</button>
   <button class="tab"    id="t-result"  onclick="show('result',this)">Submit Result</button>
-  <button class="tab"    id="t-board"   onclick="show('board',this)">Order of Play</button>
+  <button class="tab"    id="t-board"   onclick="show('board',this)">Schedule</button>
 </nav>
 
 <main class="main">
@@ -195,7 +195,7 @@ body {
 <div id="p-arrange" class="panel">
   <div class="card">
     <div class="card-ttl">Match Arranged</div>
-    <div class="card-sub">Let us know once you've sorted a date — Anthony will add it to the Order of Play.</div>
+    <div class="card-sub">Let us know once you've sorted a date — Anthony will add it to the Schedule.</div>
     <form id="af" onsubmit="submitArrange(event)">
       <div class="fg"><label>Your name</label><select id="a-you"><option value="">Select your name…</option></select></div>
       <div class="fg"><label>Opponent's name</label><select id="a-opp"><option value="">Select opponent…</option></select></div>
@@ -208,8 +208,8 @@ body {
       </div>
       <button type="submit" class="btn btn-g">✓ Notify Anthony</button>
     </form>
-    <div class="hint">Let us know once you've sorted a date and Anthony will add it to the Order of Play. Any questions, contact Anthony at squashcoordinator@coolhurst.co.uk</div>
-    <div class="ok" id="a-ok">✓ Submitted! Anthony will add it to the Order of Play.</div>
+    <div class="hint">Let us know once you've sorted a date and Anthony will add it to the Schedule. Any questions, contact Anthony at squashcoordinator@coolhurst.co.uk</div>
+    <div class="ok" id="a-ok">✓ Submitted! Anthony will add it to the Schedule.</div>
     <div id="a-err" style="display:none;color:#c0392b;font-size:13px;margin-top:8px;padding:8px;background:#fdf0ef;border-radius:6px"></div>
   </div>
 </div>
@@ -565,7 +565,7 @@ async function loadBoard(){
     const resp = await fetch(SCRIPT_URL+'?action=draw');
     const data = await resp.json();
 
-    // Arranged — only approved ones on Order of Play
+    // Arranged — only approved ones on Schedule
     const aOut = document.getElementById('arranged-out');
     const approvedArr = (data.arranged||[]).filter(a=>a.approved);
     if(approvedArr.length===0){
