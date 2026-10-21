@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GP 100 — 2026 Display</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --green:    #3C6549;
+  --green-dk: #2a4a34;
+  --green-lt: #314a38;
+  --gold:     #C8A951;
+  --gold-dk:  #a88630;
+  --fg:       #e8ede9;
+  --fg-2:     #8aaa92;
+  --surface:  rgba(255,255,255,0.07);
+  --border:   rgba(255,255,255,0.10);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--green-dk);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+/* ── LAYOUT ── */
+.screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0;
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: #1e3428;
+  padding: 22px 28px 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+  border-bottom: 2px solid var(--gold);
+}
+.hdr-badge {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; letter-spacing: .5px;
+  color: var(--green-dk); flex-shrink: 0;
+  line-height: 1.1; text-align: center;
+}
+.hdr-text h1 {
+  font-size: 26px; font-weight: 800; color: #fff; line-height: 1.1;
+  letter-spacing: -.3px;
+}
+.hdr-text p { font-size: 13px; color: var(--fg-2); margin-top: 3px; }
+.hdr-clock {
+  margin-left: auto;
+  text-align: right;
+  flex-shrink: 0;
+}
+.hdr-clock .time {
+  font-size: 32px; font-weight: 700; color: var(--gold);
+  font-variant-numeric: tabular-nums; line-height: 1;
+}
+.hdr-clock .date {
+  font-size: 12px; color: var(--fg-2); margin-top: 4px;
+}
+
+/* ── BODY ── */
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  overflow: hidden;
+  padding: 20px 24px;
+  gap: 20px;
+}
+
+/* ── SECTION ── */
+.section { display: flex; flex-direction: column; min-height: 0; }
+.sec-hdr {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px; flex-shrink: 0;
+}
+.sec-hdr h2 {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--gold);
+}
+.sec-hdr .pill {
+  background: var(--gold); color: var(--green-dk);
+  font-size: 10px; font-weight: 700; border-radius: 20px;
+  padding: 1px 7px;
+}
+.sec-line {
+  flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── DRAW GRID ── */
+.draw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  overflow-y: auto;
+}
+.mc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.mc.played { border-color: rgba(100,200,120,0.35); background: rgba(60,101,73,0.25); }
+.mc.arranged { border-color: rgba(200,169,81,0.35); background: rgba(200,169,81,0.08); }
+.mc-players {
+  font-size: 12px; font-weight: 600; color: var(--fg);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mc-players .vs { color: var(--fg-2); font-weight: 400; margin: 0 3px; }
+.mc-chips {
+  font-size: 10px; color: var(--fg-2);
+  font-variant-numeric: tabular-nums;
+}
+.mc-badge {
+  font-size: 10px; font-weight: 600; margin-top: 2px;
+}
+.mc-badge.played { color: #7fd99a; }
+.mc-badge.arranged { color: var(--gold); }
+
+/* ── ORDER OF PLAY ── */
+.oop-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; }
+.oop-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.oop-round {
+  font-size: 10px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--gold);
+  flex-shrink: 0; min-width: 52px;
+}
+.oop-players { font-size: 13px; font-weight: 600; flex: 1; }
+.oop-when { font-size: 11px; color: var(--fg-2); flex-shrink: 0; text-align: right; }
+
+/* ── RESULTS ── */
+.res-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; }
+.res-item {
+  background: rgba(60,101,73,0.2);
+  border: 1px solid rgba(100,200,120,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.res-round {
+  font-size: 10px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: #7fd99a;
+  flex-shrink: 0; min-width: 52px;
+}
+.res-match { flex: 1; }
+.res-players { font-size: 13px; font-weight: 600; }
+.res-winner { font-size: 11px; color: #7fd99a; margin-top: 1px; }
+.res-score {
+  font-size: 20px; font-weight: 700; color: #fff;
+  font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+
+/* ── FOOTER ── */
+.footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--fg-2);
+}
+.footer .refresh { display: flex; align-items: center; gap: 6px; }
+.pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:.4; transform:scale(.7); }
+}
+
+.empty { color: var(--fg-2); font-size: 13px; padding: 8px 0; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-badge">GP<br>100</div>
+    <div class="hdr-text">
+      <h1>Gareth Pugh 100</h1>
+      <p>Coolhurst Tennis &amp; Squash Club · 2026</p>
+    </div>
+    <div class="hdr-clock">
+      <div class="time" id="clock">--:--</div>
+      <div class="date" id="dateline">--</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- DRAW -->
+    <div class="section">
+      <div class="sec-hdr">
+        <h2>Round 1 Draw</h2>
+        <div class="sec-line"></div>
+      </div>
+      <div class="draw-grid" id="draw-grid"></div>
+    </div>
+
+    <!-- ORDER OF PLAY -->
+    <div class="section">
+      <div class="sec-hdr">
+        <h2>Order of Play</h2>
+        <div class="sec-line"></div>
+      </div>
+      <div class="oop-list" id="oop-list">
+        <div class="empty">Loading…</div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="section">
+      <div class="sec-hdr">
+        <h2>Results</h2>
+        <div class="sec-line"></div>
+      </div>
+      <div class="res-list" id="res-list">
+        <div class="empty">No results yet.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>R1 deadline: 4th November 2026</span>
+    <span class="refresh"><span class="pulse"></span> Live — updates every 5 minutes</span>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfJkT6N2PN5V3O93pW7HpR5gAK87kFXTusSfPfeXAvUMUW5stwuXnmcLpPQl1CONQasA/exec';
+
+const R1 = [
+  ["Dan Taylor",13,"Alex Burden",87],["Tom Wills",24,"Barry Knight",76],
+  ["Yoav Caspi",8,"Laura Rakos",92],["Ajay Duggal",63,"Justin Parsons",47],
+  ["David Sunley",38,"Sam O'Neill",72],["Ashley Rice",38,"Brian Rohan",72],
+  ["Rowley Sword",90,"Will Brown",10],["David Robertson",19,"Jonathan Dando",81],
+  ["Alexander Jan",61,"Monish Malik",49],["Matt Cartwright",63,"Ian Ho",47],
+  ["Mike Koreneff",78,"Jim Harrison",22],["Charlie Logan",46,"Ben Davis",64],
+  ["Thomas Selway Spencer",11,"Lucy Johnson",89],["Sebastian Keuchel",15,"Amy McNay",85],
+  ["Sam Kapila",11,"Lara Yusfin",89],["Carlo Cresto-Dina",48,"Pippa Penn",52],
+  ["Annette Caseley Chapman",28,"Ralph Harrison",72],["Wendy Levin",25,"Philip Hull",75],
+  ["Simon Millman",6,"Sophie Caruana",94],["Oliver Wilson",58,"Dodo Levin",52],
+  ["Hamish Gilder",41,"James Penn",69],["Lee Holden",17,"Jon Neill",83],
+  ["Vita P",37,"Sean Bartlett",63],["Andrew Syk",51,"Ashley Marshall",59],
+  ["Martyna Blass",81,"Alan Salama",19],["Andrei Yusfin",40,"Peter Sweeney",60],
+  ["Marton Csikos",70,"Jakob von Kalckreuth",40],["Jimmy Ayad",64,"Michael Stavrinou",46],
+  ["Wills McGuigan",12,"Jack Barrett",88],["Paul Davies",59,"Henry Penn",51],
+  ["John Punter",61,"Felix Wolf",39],["Dylan Rice",67,"John O'Brien",43],
+  ["Owen Jacob",62,"John Hart",48],["Peter Hilton",59,"Georgina Brown",51],
+  ["Arthur Newman",33,"Diego Keuchel",77],["Stuart Miller",44,"David Choi",66],
+  ["Adam Twinn",72,"Christopher Rigby",38],["Steph Highwood",17,"Seun Adeyoola",83],
+  ["Andrew Symmons",69,"Paddy Joyce",51],["Alex Boerescu",91,"Zach Moss",9],
+  ["Peter Myers",42,"James Ayliffe",68],["James Wilson",13,"Gareth Cooney",87],
+  ["Graham Stegmann",83,"Anthony Belcher",17],["Danny Hilton",45,"Ramon Bloomberg",65],
+  ["Alex Worrall",17,"James Brindle",83],["Tony Hulse",75,"Richard Cartmel",25],
+  ["Matt Lyons",39,"Lewis Lenssen",71],["Will Brett",76,"Florie Smith",24],
+  ["Anna Wood",88,"Martin Cripps",12],["Duncan Rowden",58,"Paul Giltinan",52],
+  ["Stephen Morley",80,"Thomas Horncastle",20]
+];
+
+// ── CLOCK ──
+function tickClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('dateline').textContent =
+    now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+// ── HELPERS ──
+function makeKey(a,b){
+  return [a,b].map(n=>n.toLowerCase().trim()).sort().join('|||');
+}
+function fmtWhen(when) {
+  if (!when) return '';
+  const s = when.toString();
+  if (!s.includes('T') && !s.includes('GMT') && !s.includes('UTC') && s.length < 30) return s;
+  try {
+    const d = new Date(s);
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  } catch(e) { return s; }
+}
+
+// ── DATA ──
+let arrangedIndex = {};
+let resultsIndex  = {};
+
+async function loadData() {
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=draw&t=' + Date.now());
+    const data = await resp.json();
+
+    // Build indexes
+    arrangedIndex = {};
+    (data.arranged||[]).filter(a=>a.approved).forEach(a => {
+      arrangedIndex[makeKey(a.you, a.opp)] = a;
+    });
+    resultsIndex = {};
+    (data.results||[]).forEach(r => {
+      resultsIndex[makeKey(r.player, r.opp)] = r;
+    });
+
+    renderDraw();
+    renderOOP(data);
+    renderResults(data);
+  } catch(e) {
+    console.error('Data load failed', e);
+  }
+}
+
+// ── DRAW ──
+function renderDraw() {
+  const grid = document.getElementById('draw-grid');
+  grid.innerHTML = R1.map(m => {
+    const [p1,s1,p2,s2] = m;
+    const key = makeKey(p1,p2);
+    const res = resultsIndex[key];
+    const arr = arrangedIndex[key];
+    let cls = '', badge = '';
+    if (res) {
+      cls = 'played';
+      badge = `<div class="mc-badge played">✅ ${res.winner} ${res.playerScore}–${res.oppScore}</div>`;
+    } else if (arr) {
+      cls = 'arranged';
+      badge = `<div class="mc-badge arranged">📅 ${fmtWhen(arr.when)}${arr.court ? ' · '+arr.court : ''}</div>`;
+    }
+    return `<div class="mc ${cls}">
+      <div class="mc-players">${p1} <span class="vs">v</span> ${p2}</div>
+      <div class="mc-chips">${s1} – ${s2}</div>
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+// ── ORDER OF PLAY ──
+function renderOOP(data) {
+  const el = document.getElementById('oop-list');
+  const approved = (data.arranged||[]).filter(a=>a.approved);
+  if (!approved.length) {
+    el.innerHTML = '<div class="empty">No matches confirmed yet — check back soon.</div>';
+    return;
+  }
+  el.innerHTML = approved.map(a => `
+    <div class="oop-item">
+      <div class="oop-round">${a.round}</div>
+      <div class="oop-players">${a.you} v ${a.opp}</div>
+      <div class="oop-when">${fmtWhen(a.when)}${a.court ? '<br>'+a.court : ''}</div>
+    </div>`).join('');
+}
+
+// ── RESULTS ──
+function renderResults(data) {
+  const el = document.getElementById('res-list');
+  const results = data.results||[];
+  if (!results.length) {
+    el.innerHTML = '<div class="empty">No results yet — R1 deadline 4th November.</div>';
+    return;
+  }
+  el.innerHTML = results.map(r => `
+    <div class="res-item">
+      <div class="res-round">${r.round}</div>
+      <div class="res-match">
+        <div class="res-players">${r.player} v ${r.opp}</div>
+        <div class="res-winner">Winner: ${r.winner}</div>
+      </div>
+      <div class="res-score">${r.playerScore}–${r.oppScore}</div>
+    </div>`).join('');
+}
+
+// ── INIT & AUTO-REFRESH ──
+loadData();
+setInterval(loadData, 5 * 60 * 1000); // every 5 minutes
+</script>
+</body>
+</html>
