@@ -154,6 +154,8 @@ body {
 .arr-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--gold-dk);background:color-mix(in srgb,var(--gold) 12%,var(--surface));border:1px solid var(--gold);border-radius:5px;padding:3px 8px;margin-top:6px;}
 .played-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#1a6b2f;background:color-mix(in srgb,#3C6549 12%,var(--surface));border:1px solid #3C6549;border-radius:5px;padding:3px 8px;margin-top:6px;}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .played-badge{color:#7fd99a;border-color:#6aaa7a;background:color-mix(in srgb,#6aaa7a 15%,var(--surface));}}
+.wo-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#7a5c00;background:#fff8e1;border:1px solid #e0c060;border-radius:5px;padding:3px 8px;margin-top:6px;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .wo-badge{color:#f5d87a;border-color:#c8a040;background:rgba(200,160,64,.12);}}
 /* ROUND FILTER */
 .round-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .rf-btn{padding:5px 11px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-2);cursor:pointer;transition:all .15s}
@@ -225,9 +227,20 @@ body {
       <div class="fg"><label>Round</label>
         <select id="r-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
       </div>
-      <div class="frow">
-        <div class="fg"><label>Your score</label><input id="r-ys" type="number" placeholder="100" min="0" max="200" required></div>
-        <div class="fg"><label>Opponent score</label><input id="r-os" type="number" placeholder="84" min="0" max="200" required></div>
+      <div class="fg" style="display:flex;align-items:center;gap:10px;padding:8px 0 4px">
+        <input type="checkbox" id="r-wo" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0" onchange="toggleWoMode(this.checked)">
+        <label for="r-wo" style="font-size:13px;font-weight:600;color:var(--fg);text-transform:none;letter-spacing:0;cursor:pointer;margin:0">This is a walkover (no match played)</label>
+      </div>
+      <div id="r-scores">
+        <div class="frow">
+          <div class="fg"><label>Your score</label><input id="r-ys" type="number" placeholder="100" min="0" max="200" required></div>
+          <div class="fg"><label>Opponent score</label><input id="r-os" type="number" placeholder="84" min="0" max="200" required></div>
+        </div>
+      </div>
+      <div id="r-wo-winner" style="display:none">
+        <div class="fg"><label>Who advances?</label>
+          <select id="r-winner-sel"><option value="">Select…</option></select>
+        </div>
       </div>
       <div class="fg"><label>Notes (optional)</label><textarea id="r-notes" rows="2" placeholder="e.g. great match, went to 99-99!"></textarea></div>
       <button type="submit" class="btn btn-a">Submit result</button>
@@ -467,6 +480,7 @@ function buildR1(){
         </div>
         ${(()=>{
           const res = getResult(p1,p2);
+          if(res && res.walkover) return `<div class="wo-badge">🚶 W/O — ${res.winner} advances${res.notes ? ' ('+res.notes+')' : ''}</div>`;
           if(res) return `<div class="played-badge">✅ Played: ${res.winner} won ${res.playerScore}–${res.oppScore}</div>`;
           const arr = getArranged(p1,p2);
           if(arr) return `<div class="arr-badge">📅 Arranged: ${fmtWhen(arr)}</div>`;
@@ -533,6 +547,18 @@ async function submitArrange(e){
   btn.disabled = false; btn.textContent = '✓ Notify Anthony';
 }
 
+// ─── WALKOVER TOGGLE ───
+function toggleWoMode(on) {
+  document.getElementById('r-scores').style.display = on ? 'none' : '';
+  document.getElementById('r-wo-winner').style.display = on ? '' : 'none';
+  document.getElementById('r-ys').required = !on;
+  document.getElementById('r-os').required = !on;
+  if(on) {
+    document.getElementById('r-ys').value = '';
+    document.getElementById('r-os').value = '';
+  }
+}
+
 // ─── SUBMIT RESULT ───
 async function submitResult(e){
   e.preventDefault();
@@ -540,23 +566,31 @@ async function submitResult(e){
   const opp   = document.getElementById('r-opp').value.trim();
   const rnd   = document.getElementById('r-rnd').value;
   if(!you || !opp || !rnd){ alert('Please fill in your name, opponent and round.'); return; }
-  const ys    = document.getElementById('r-ys').value;
-  const os    = document.getElementById('r-os').value;
+  const isWo  = document.getElementById('r-wo').checked;
   const notes = document.getElementById('r-notes').value.trim();
-  const winner = parseInt(ys)>parseInt(os) ? you : opp;
 
   const btn = e.target.querySelector('button[type=submit]');
   btn.disabled = true; btn.textContent = 'Sending…';
+
+  let payload;
+  if(isWo) {
+    const winner = document.getElementById('r-winner-sel').value;
+    if(!winner){ alert('Please select who advances.'); btn.disabled=false; btn.textContent='Submit result'; return; }
+    payload = {action:'walkover', you, opp, round:rnd, winner, notes};
+  } else {
+    const ys = document.getElementById('r-ys').value;
+    const os = document.getElementById('r-os').value;
+    const winner = parseInt(ys)>parseInt(os) ? you : opp;
+    payload = {action:'result', you, opp, round:rnd, yourScore:ys, oppScore:os, winner, notes};
+  }
+
   try {
-    await fetch(SCRIPT_URL, {
-      method:'POST',
-      mode:'no-cors',
-      body: JSON.stringify({action:'result', you, opp, round:rnd, yourScore:ys, oppScore:os, winner, notes})
-    });
+    await fetch(SCRIPT_URL, {method:'POST', mode:'no-cors', body: JSON.stringify(payload)});
   } catch(err){}
   document.getElementById('r-ok').style.display='block';
   document.getElementById('rf').reset();
-  btn.disabled = false; btn.textContent = '✓ Submit Result';
+  toggleWoMode(false);
+  btn.disabled = false; btn.textContent = 'Submit result';
 }
 
 // ─── LOAD BOARD FROM SHEET ───
@@ -565,7 +599,7 @@ async function loadBoard(){
     const resp = await fetch(SCRIPT_URL+'?action=draw');
     const data = await resp.json();
 
-    // Arranged — only approved ones on Schedule
+    // Arranged — only approved ones on Order of Play
     const aOut = document.getElementById('arranged-out');
     const approvedArr = (data.arranged||[]).filter(a=>a.approved);
     if(approvedArr.length===0){
@@ -584,7 +618,15 @@ async function loadBoard(){
     if(!data.results || data.results.length===0){
       rOut.innerHTML = '<div class="empty"><div class="ico">🎾</div>No results yet — first round deadline is 4th November.</div>';
     } else {
-      rOut.innerHTML = data.results.map(r=>`
+      rOut.innerHTML = data.results.map(r=> r.walkover ? `
+        <div class="result-item">
+          <span class="result-round">${r.round}</span>
+          <div class="result-match">
+            <div class="result-players">${r.player} v ${r.opp}</div>
+            <div style="font-size:12px;color:var(--fg-2)">🚶 Walkover — <strong>${r.winner}</strong> advances${r.notes ? ' · '+r.notes : ''}</div>
+          </div>
+          <span class="result-score" style="font-size:11px;color:var(--fg-2)">W/O</span>
+        </div>` : `
         <div class="result-item">
           <span class="result-round">${r.round}</span>
           <div class="result-match">
@@ -616,7 +658,7 @@ async function loadArrangedIndex(){
     resultsIndex = {};
     (data.results||[]).forEach(r=>{
       const k = makeKey(r.player, r.opp);
-      resultsIndex[k] = r;
+      resultsIndex[k] = r; // r.walkover will be true for walkovers
     });
     buildR1();
   } catch(e){}
@@ -672,7 +714,15 @@ function initForms() {
     }
   });
 
-  // Same for result form
+  // Same for result form — also update walkover winner dropdown
+  function updateResultWoWinner() {
+    const you = document.getElementById('r-you').value;
+    const opp = document.getElementById('r-opp').value;
+    const winSel = document.getElementById('r-winner-sel');
+    winSel.innerHTML = '<option value="">Select…</option>';
+    if(you) winSel.add(new Option(you, you));
+    if(opp && opp !== you) winSel.add(new Option(opp, opp));
+  }
   document.getElementById('r-you').addEventListener('change', function(){
     const you = this.value;
     const match = R1.find(m => m[0]===you || m[2]===you);
@@ -683,7 +733,9 @@ function initForms() {
     } else {
       oppSel.value = '';
     }
+    updateResultWoWinner();
   });
+  document.getElementById('r-opp').addEventListener('change', updateResultWoWinner);
 }
 
 // Fix timestamp display — handle ISO strings from sheet
