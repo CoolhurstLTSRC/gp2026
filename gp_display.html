@@ -75,17 +75,15 @@ html, body {
 /* ── BODY ── */
 .body {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr auto;
-  gap: 0;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  padding: 20px 24px;
-  gap: 20px;
+  padding: 16px 24px;
+  gap: 16px;
 }
 
 /* ── SECTION ── */
-.section { display: flex; flex-direction: column; min-height: 0; }
+.section { display: flex; flex-direction: column; min-height: 0; flex: 1; }
 .sec-hdr {
   display: flex; align-items: center; gap: 10px;
   margin-bottom: 12px; flex-shrink: 0;
@@ -109,6 +107,8 @@ html, body {
   grid-template-columns: repeat(3, 1fr);
   gap: 7px;
   overflow-y: auto;
+  min-height: 0;
+  flex: 1;
 }
 .mc {
   background: var(--surface);
@@ -137,8 +137,8 @@ html, body {
 .mc-badge.played { color: #7fd99a; }
 .mc-badge.arranged { color: var(--gold); }
 
-/* ── Schedule ── */
-.oop-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; }
+/* ── ORDER OF PLAY ── */
+.oop-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; min-height: 0; flex: 1; }
 .oop-item {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -157,7 +157,7 @@ html, body {
 .oop-when { font-size: 11px; color: var(--fg-2); flex-shrink: 0; text-align: right; }
 
 /* ── RESULTS ── */
-.res-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; }
+.res-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; min-height: 0; flex: 1; }
 .res-item {
   background: rgba(60,101,73,0.2);
   border: 1px solid rgba(100,200,120,0.2);
@@ -233,7 +233,7 @@ html, body {
       <div class="draw-grid" id="draw-grid"></div>
     </div>
 
-    <!-- Schedule -->
+    <!-- ORDER OF PLAY -->
     <div class="section">
       <div class="sec-hdr">
         <h2>Schedule</h2>
@@ -359,7 +359,10 @@ function renderDraw() {
     const res = resultsIndex[key];
     const arr = arrangedIndex[key];
     let cls = '', badge = '';
-    if (res) {
+    if (res && res.walkover) {
+      cls = 'played';
+      badge = `<div class="mc-badge played">🚶 W/O — ${res.winner} advances</div>`;
+    } else if (res) {
       cls = 'played';
       badge = `<div class="mc-badge played">✅ ${res.winner} ${res.playerScore}–${res.oppScore}</div>`;
     } else if (arr) {
@@ -374,7 +377,7 @@ function renderDraw() {
   }).join('');
 }
 
-// ── Schedule ──
+// ── ORDER OF PLAY ──
 function renderOOP(data) {
   const el = document.getElementById('oop-list');
   const approved = (data.arranged||[]).filter(a=>a.approved);
@@ -398,7 +401,15 @@ function renderResults(data) {
     el.innerHTML = '<div class="empty">No results yet — R1 deadline 4th November.</div>';
     return;
   }
-  el.innerHTML = results.map(r => `
+  el.innerHTML = results.map(r => r.walkover ? `
+    <div class="res-item">
+      <div class="res-round">${r.round}</div>
+      <div class="res-match">
+        <div class="res-players">${r.player} v ${r.opp}</div>
+        <div class="res-winner">🚶 Walkover — ${r.winner} advances${r.notes ? ' · '+r.notes : ''}</div>
+      </div>
+      <div class="res-score" style="font-size:14px;opacity:.6">W/O</div>
+    </div>` : `
     <div class="res-item">
       <div class="res-round">${r.round}</div>
       <div class="res-match">
