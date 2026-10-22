@@ -137,35 +137,48 @@ html, body {
 .mc-badge.played { color: #7fd99a; }
 .mc-badge.arranged { color: var(--gold); }
 
-/* ── ORDER OF PLAY ── */
-.oop-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; flex: 1; }
+/* ── SCHEDULE ── */
+.oop-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; min-height: 0; flex: 1; }
 .oop-item {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 18px 22px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 .oop-round {
-  font-size: 14px; font-weight: 700; letter-spacing: .8px;
+  font-size: 15px; font-weight: 700; letter-spacing: .8px;
   text-transform: uppercase; color: var(--gold);
-  flex-shrink: 0; min-width: 60px;
+  flex-shrink: 0; min-width: 64px;
 }
-.oop-players { font-size: 20px; font-weight: 600; flex: 1; }
-.oop-when { font-size: 16px; color: var(--fg-2); flex-shrink: 0; text-align: right; }
+.oop-players { font-size: 24px; font-weight: 600; flex: 1; line-height: 1.2; }
+.oop-scores {
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.oop-score {
+  font-size: 22px; font-weight: 700; color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  background: rgba(200,169,81,0.12); border: 1px solid rgba(200,169,81,0.35);
+  border-radius: 8px; padding: 4px 12px; min-width: 52px; text-align: center;
+}
+.oop-vs {
+  font-size: 16px; color: var(--fg-2); font-weight: 500;
+}
+.oop-when { font-size: 17px; color: var(--fg-2); flex-shrink: 0; text-align: right; line-height: 1.4; }
 
 /* ── RESULTS ── */
 .res-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; flex: 1; }
 .res-item {
   background: rgba(60,101,73,0.2);
   border: 1px solid rgba(100,200,120,0.2);
-  border-radius: 10px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 16px 22px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 .res-round {
   font-size: 14px; font-weight: 700; letter-spacing: .8px;
@@ -224,26 +237,8 @@ html, body {
   <!-- BODY -->
   <div class="body">
 
-    <!-- DRAW R1 -->
-    <div class="section">
-      <div class="sec-hdr">
-        <h2>Round 1 Draw</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="draw-grid" id="draw-grid"></div>
-    </div>
-
-    <!-- DRAW R2 -->
-    <div class="section" id="r2-section" style="display:none">
-      <div class="sec-hdr">
-        <h2>Round 2 Draw</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="draw-grid" id="draw-grid-r2"></div>
-    </div>
-
-    <!-- ORDER OF PLAY -->
-    <div class="section">
+    <!-- SCHEDULE -->
+    <div class="section" style="flex:2">
       <div class="sec-hdr">
         <h2>Schedule</h2>
         <div class="sec-line"></div>
@@ -254,7 +249,7 @@ html, body {
     </div>
 
     <!-- RESULTS -->
-    <div class="section">
+    <div class="section" style="flex:1">
       <div class="sec-hdr">
         <h2>Results</h2>
         <div class="sec-line"></div>
@@ -355,7 +350,6 @@ async function loadData() {
       resultsIndex[makeKey(r.player, r.opp)] = r;
     });
 
-    renderDraw();
     renderOOP(data);
     renderResults(data);
   } catch(e) {
@@ -398,6 +392,16 @@ function renderDraw() {
 }
 
 // ── ORDER OF PLAY ──
+function getScores(p1, p2) {
+  const allMatches = [...R1, ...R2];
+  for (const m of allMatches) {
+    const [a,s1,b,s2] = m;
+    if (a.toLowerCase()===p1.toLowerCase() && b.toLowerCase()===p2.toLowerCase()) return [s1,s2];
+    if (a.toLowerCase()===p2.toLowerCase() && b.toLowerCase()===p1.toLowerCase()) return [s2,s1];
+  }
+  return null;
+}
+
 function renderOOP(data) {
   const el = document.getElementById('oop-list');
   const approved = (data.arranged||[]).filter(a=>a.approved);
@@ -405,12 +409,17 @@ function renderOOP(data) {
     el.innerHTML = '<div class="empty">No matches confirmed yet — check back soon.</div>';
     return;
   }
-  el.innerHTML = approved.map(a => `
+  el.innerHTML = approved.map(a => {
+    const scores = getScores(a.you, a.opp);
+    const scoreStr = scores ? `<span class="oop-score">${scores[0]}</span><span class="oop-vs">v</span><span class="oop-score">${scores[1]}</span>` : '';
+    return `
     <div class="oop-item">
       <div class="oop-round">${a.round}</div>
       <div class="oop-players">${a.you} v ${a.opp}</div>
+      ${scores ? `<div class="oop-scores">${scoreStr}</div>` : ''}
       <div class="oop-when">${fmtWhen(a.when)}${a.court ? '<br>'+a.court : ''}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── RESULTS ──
