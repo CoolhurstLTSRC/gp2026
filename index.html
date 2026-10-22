@@ -37,7 +37,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body {
   font-family:'DM Sans',system-ui,sans-serif;
-  background:var(--cream-dk); color:var(--fg); font-size:14px; line-height:1.5;
+  background:var(--cream-dk); color:var(--fg); font-size:16px; line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));
   padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-block:0;
@@ -55,8 +55,8 @@ body {
   background:var(--gold);display:flex;align-items:center;justify-content:center;
   font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--green-dk);flex-shrink:0;
 }
-.hdr-text h1{font-size:15px;font-weight:700;color:#fff;line-height:1.2}
-.hdr-text p{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.hdr-text h1{font-size:18px;font-weight:700;color:#fff;line-height:1.2}
+.hdr-text p{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
 /* TABS */
 .tabs {
   position:sticky;top:0;z-index:10;
@@ -78,11 +78,11 @@ body {
 .panel{display:none}.panel.on{display:block}
 /* CARD */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.card-ttl{font-size:15px;font-weight:700;margin-bottom:3px}
-.card-sub{font-size:12px;color:var(--fg-2);margin-bottom:14px}
+.card-ttl{font-size:17px;font-weight:700;margin-bottom:3px}
+.card-sub{font-size:14px;color:var(--fg-2);margin-bottom:14px}
 /* FORM */
 .fg{margin-bottom:11px}
-.fg label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);margin-bottom:4px}
+.fg label{display:block;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);margin-bottom:4px}
 .fg input,.fg select,.fg textarea{
   width:100%;padding:9px 11px;
   border:1px solid var(--border);border-radius:6px;
@@ -104,17 +104,17 @@ body {
 .hint{background:var(--surface-2);border:1px dashed var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--fg-2);line-height:1.55;margin-top:9px}
 .ok{display:none;background:var(--green-lt);border:1px solid var(--green);border-radius:6px;padding:11px;font-size:13px;font-weight:500;color:var(--green);text-align:center;margin-top:10px}
 /* DRAW */
-.round-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--fg-2);padding:14px 0 7px}
+.round-lbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--fg-2);padding:14px 0 7px}
 .match-list{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
 .mc{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   padding:10px 13px;display:grid;
   grid-template-columns:30px 1fr 10px 1fr 30px;
-  align-items:center;gap:5px;font-size:13px;cursor:default;
+  align-items:center;gap:5px;font-size:15px;cursor:default;
 }
 .mc.bye{opacity:.5;grid-template-columns:1fr;font-size:12px;color:var(--fg-2);padding:8px 13px}
-.chip{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--gold-dk);text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
-.vdot{font-size:10px;font-weight:700;color:var(--fg-2);text-align:center}
+.chip{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--gold-dk);text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+.vdot{font-size:12px;font-weight:700;color:var(--fg-2);text-align:center}
 .pn{font-weight:500;line-height:1.3;min-width:0}
 .pn.r{text-align:right}
 .mc.hi{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,var(--surface))}
@@ -132,33 +132,33 @@ body {
   transition:opacity .15s;
 }
 .contact-btn:hover{opacity:.8}
-.mc-detail{display:none;padding:8px 13px 10px;background:var(--surface-2);border-top:1px solid var(--border);border-radius:0 0 var(--r) var(--r);font-size:12px;color:var(--fg-2);line-height:1.6}
+.mc-detail{display:none;padding:8px 13px 10px;background:var(--surface-2);border-top:1px solid var(--border);border-radius:0 0 var(--r) var(--r);font-size:14px;color:var(--fg-2);line-height:1.6}
 .mc-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;overflow:hidden}
 .mc-wrap .mc{border:none;border-radius:0;margin:0}
 .mc-wrap.open .mc-detail{display:block}
 .mc-wrap.hi .mc{border-left:3px solid var(--gold)}
 /* BOARD */
 .board-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;margin-bottom:7px}
-.board-round{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--fg-2);margin-bottom:2px}
-.board-players{font-size:14px;font-weight:600}
-.board-when{font-size:12px;color:var(--fg-2);margin-top:1px}
+.board-round{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--fg-2);margin-bottom:2px}
+.board-players{font-size:16px;font-weight:600}
+.board-when{font-size:14px;color:var(--fg-2);margin-top:1px}
 .result-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
-.result-round{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);min-width:56px}
+.result-round{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);min-width:56px}
 .result-match{flex:1;min-width:0}
-.result-players{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.result-score{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-dk);font-weight:500}
+.result-players{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-score{font-family:'DM Mono',monospace;font-size:15px;color:var(--gold-dk);font-weight:500}
 .empty{text-align:center;padding:32px 20px;color:var(--fg-2);font-size:13px}
 .empty .ico{font-size:26px;margin-bottom:7px}
 .loading{text-align:center;padding:24px;color:var(--fg-2);font-size:13px}
 /* ARRANGED BADGE */
-.arr-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--gold-dk);background:color-mix(in srgb,var(--gold) 12%,var(--surface));border:1px solid var(--gold);border-radius:5px;padding:3px 8px;margin-top:6px;}
-.played-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#1a6b2f;background:color-mix(in srgb,#3C6549 12%,var(--surface));border:1px solid #3C6549;border-radius:5px;padding:3px 8px;margin-top:6px;}
+.arr-badge{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--gold-dk);background:color-mix(in srgb,var(--gold) 12%,var(--surface));border:1px solid var(--gold);border-radius:5px;padding:3px 9px;margin-top:6px;}
+.played-badge{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#1a6b2f;background:color-mix(in srgb,#3C6549 12%,var(--surface));border:1px solid #3C6549;border-radius:5px;padding:3px 9px;margin-top:6px;}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .played-badge{color:#7fd99a;border-color:#6aaa7a;background:color-mix(in srgb,#6aaa7a 15%,var(--surface));}}
-.wo-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#7a5c00;background:#fff8e1;border:1px solid #e0c060;border-radius:5px;padding:3px 8px;margin-top:6px;}
+.wo-badge{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#7a5c00;background:#fff8e1;border:1px solid #e0c060;border-radius:5px;padding:3px 9px;margin-top:6px;}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .wo-badge{color:#f5d87a;border-color:#c8a040;background:rgba(200,160,64,.12);}}
 /* ROUND FILTER */
 .round-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.rf-btn{padding:5px 11px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-2);cursor:pointer;transition:all .15s}
+.rf-btn{padding:6px 13px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-2);cursor:pointer;transition:all .15s}
 .rf-btn.on{background:var(--green);color:#fff;border-color:var(--green)}
 </style>
 
@@ -187,9 +187,11 @@ body {
   </div>
   <div class="round-filter" id="round-filter">
     <button class="rf-btn on" onclick="setRound('r1',this)">Round 1</button>
+    <button class="rf-btn" onclick="setRound('r2',this)">Round 2</button>
     <button class="rf-btn" onclick="setRound('byes',this)">Byes</button>
   </div>
   <div id="r1-wrap"><div class="round-lbl">Round 1 — by 4th November</div><div class="match-list" id="r1-list"></div></div>
+  <div id="r2-wrap" hidden><div class="round-lbl">Round 2</div><div class="match-list" id="r2-list"></div></div>
   <div id="bye-wrap" hidden><div class="round-lbl">Byes — advance to Round 2</div><div class="match-list" id="bye-list"></div></div>
 </div>
 
@@ -298,6 +300,9 @@ const R1 = [
   ["Matt Lyons",39,"Lewis Lenssen",71],["Will Brett",76,"Florie Smith",24],
   ["Anna Wood",88,"Martin Cripps",12],["Duncan Rowden",58,"Paul Giltinan",52],
   ["Stephen Morley",80,"Thomas Horncastle",20]
+];
+const R2 = [
+  ["Brian Rohan",76,"Daniel Ambrose",24]
 ];
 const BYES = ["Damien Patel","Daniel Ambrose","Idan Caspi","Elliot Higgins",
   "Simon Farrell","Philip Rossiter","Dick Bowman","Nathan Bigaignon",
@@ -447,7 +452,8 @@ function setRound(r, btn){
   currentRound = r;
   document.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
-  document.getElementById('r1-wrap').hidden = (r !== 'r1');
+  document.getElementById('r1-wrap').hidden  = (r !== 'r1');
+  document.getElementById('r2-wrap').hidden  = (r !== 'r2');
   document.getElementById('bye-wrap').hidden = (r !== 'byes');
   filterDraw(searchQ);
 }
@@ -491,6 +497,38 @@ function buildR1(){
   }).join('');
 }
 
+function buildR2(){
+  const list = document.getElementById('r2-list');
+  list.innerHTML = R2.map((m,i)=>{
+    const [p1,s1,p2,s2] = m;
+    const c1 = mkContact(p1), c2 = mkContact(p2);
+    const idx = 1000+i;
+    return `<div class="mc-wrap" id="mw${idx}" onclick="toggleMatch(${idx})">
+      <div class="mc" data-p1="${p1.toLowerCase()}" data-p2="${p2.toLowerCase()}">
+        <span class="chip">${s1}</span>
+        <span class="pn">${p1}</span>
+        <span class="vdot">v</span>
+        <span class="pn r">${p2}</span>
+        <span class="chip">${s2}</span>
+      </div>
+      <div class="mc-detail">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span>${c1 ? p1+': '+c1 : p1+': no number'}</span>
+          <span>${c2 ? p2+': '+c2 : p2+': no number'}</span>
+        </div>
+        ${(()=>{
+          const res = getResult(p1,p2);
+          if(res && res.walkover) return `<div class="wo-badge">🚶 W/O — ${res.winner} advances${res.notes ? ' ('+res.notes+')' : ''}</div>`;
+          if(res) return `<div class="played-badge">✅ Played: ${res.winner} won ${res.playerScore}–${res.oppScore}</div>`;
+          const arr = getArranged(p1,p2);
+          if(arr) return `<div class="arr-badge">📅 Arranged: ${fmtWhen(arr)}</div>`;
+          return '';
+        })()}
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function buildByes(){
   const list = document.getElementById('bye-list');
   list.innerHTML = BYES.map(n=>`<div class="mc bye">${n} — advances to Round 2</div>`).join('');
@@ -504,8 +542,10 @@ function toggleMatch(i){
 function filterDraw(q){
   searchQ = q;
   const lq = q.toLowerCase().trim();
-  const all = document.querySelectorAll('#r1-list .mc-wrap');
   let shown = 0;
+  // filter whichever list is visible
+  const listId = currentRound === 'r2' ? '#r2-list .mc-wrap' : currentRound === 'byes' ? '#bye-list .mc-wrap' : '#r1-list .mc-wrap';
+  const all = document.querySelectorAll(listId);
   all.forEach(c=>{
     const p1 = c.querySelector('.mc').dataset.p1||'';
     const p2 = c.querySelector('.mc').dataset.p2||'';
@@ -514,7 +554,8 @@ function filterDraw(q){
     if(match) shown++;
     if(match && lq) c.classList.add('hi'); else c.classList.remove('hi');
   });
-  document.getElementById('dcnt').textContent = lq ? `${shown} match${shown!==1?'es':''}` : '51 matches';
+  const total = currentRound === 'r2' ? R2.length : currentRound === 'byes' ? BYES.length : R1.length;
+  document.getElementById('dcnt').textContent = lq ? `${shown} match${shown!==1?'es':''}` : `${total} match${total!==1?'es':''}`;
 }
 
 // ─── SUBMIT ARRANGE ───
@@ -660,7 +701,7 @@ async function loadArrangedIndex(){
       const k = makeKey(r.player, r.opp);
       resultsIndex[k] = r; // r.walkover will be true for walkovers
     });
-    buildR1();
+    buildR1(); buildR2(); buildByes();
   } catch(e){}
 }
 
@@ -754,5 +795,5 @@ function fmtWhen(when) {
 }
 
 // Init draw (after all functions defined)
-buildR1(); buildByes(); initForms();
+buildR1(); buildR2(); buildByes(); initForms();
 </script>
