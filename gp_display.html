@@ -404,9 +404,16 @@ function getScores(p1, p2) {
 
 function renderOOP(data) {
   const el = document.getElementById('oop-list');
-  const approved = (data.arranged||[]).filter(a=>a.approved);
+  const played = new Set((data.results||[]).map(r => makeKey(r.player, r.opp)));
+  const approved = (data.arranged||[])
+    .filter(a => a.approved && !played.has(makeKey(a.you, a.opp)))
+    .sort((a, b) => {
+      const ta = a.when ? new Date(a.when).getTime() : Infinity;
+      const tb = b.when ? new Date(b.when).getTime() : Infinity;
+      return ta - tb;
+    });
   if (!approved.length) {
-    el.innerHTML = '<div class="empty">No matches confirmed yet — check back soon.</div>';
+    el.innerHTML = '<div class="empty">No upcoming matches scheduled — check back soon.</div>';
     return;
   }
   el.innerHTML = approved.map(a => {

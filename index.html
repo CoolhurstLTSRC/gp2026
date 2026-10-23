@@ -640,11 +640,18 @@ async function loadBoard(){
     const resp = await fetch(SCRIPT_URL+'?action=draw');
     const data = await resp.json();
 
-    // Arranged — only approved ones on Order of Play
+    // Arranged — only approved, unplayed ones; sorted by date
     const aOut = document.getElementById('arranged-out');
-    const approvedArr = (data.arranged||[]).filter(a=>a.approved);
+    const playedKeys = new Set((data.results||[]).map(r=>makeKey(r.player,r.opp)));
+    const approvedArr = (data.arranged||[])
+      .filter(a=>a.approved && !playedKeys.has(makeKey(a.you,a.opp)))
+      .sort((a,b)=>{
+        const ta = a.when ? new Date(a.when).getTime() : Infinity;
+        const tb = b.when ? new Date(b.when).getTime() : Infinity;
+        return ta - tb;
+      });
     if(approvedArr.length===0){
-      aOut.innerHTML = '<div class="empty"><div class="ico">📋</div>No matches confirmed yet — check back soon!</div>';
+      aOut.innerHTML = '<div class="empty"><div class="ico">📋</div>No upcoming matches scheduled — check back soon!</div>';
     } else {
       aOut.innerHTML = approvedArr.map(a=>`
         <div class="board-item">
