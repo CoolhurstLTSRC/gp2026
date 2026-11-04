@@ -156,6 +156,20 @@ body {
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .played-badge{color:#7fd99a;border-color:#6aaa7a;background:color-mix(in srgb,#6aaa7a 15%,var(--surface));}}
 .wo-badge{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#7a5c00;background:#fff8e1;border:1px solid #e0c060;border-radius:5px;padding:3px 9px;margin-top:6px;}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .wo-badge{color:#f5d87a;border-color:#c8a040;background:rgba(200,160,64,.12);}}
+/* FORM-GROUP (arrange / result tabs) */
+.form-group{margin-bottom:11px}
+.form-group label{display:block;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--fg-2);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;
+  background:var(--surface-2);color:var(--fg);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green)}
+/* WO TOGGLE */
+.wo-toggle{display:flex;gap:6px;margin-bottom:14px}
+.wo-toggle button{flex:1;padding:8px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface-2);color:var(--fg-2);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.wo-toggle button.on{background:var(--green);color:#fff;border-color:var(--green)}
+/* MSG */
+.msg{display:none;margin-top:10px;padding:11px;border-radius:6px;font-size:13px;font-weight:500;text-align:center;background:var(--green-lt);border:1px solid var(--green);color:var(--green)}
 /* ROUND FILTER */
 .round-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .rf-btn{padding:6px 13px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-2);cursor:pointer;transition:all .15s}
@@ -195,60 +209,91 @@ body {
   <div id="bye-wrap" hidden><div class="round-lbl">Byes — advance to Round 2</div><div class="match-list" id="bye-list"></div></div>
 </div>
 
-<!-- ═══ ARRANGE ═══ -->
+<!-- ARRANGE TAB -->
 <div id="p-arrange" class="panel">
   <div class="card">
-    <div class="card-ttl">Match Arranged</div>
-    <div class="card-sub">Let us know once you've sorted a date — Anthony will add it to the Schedule.</div>
-    <form id="af" onsubmit="submitArrange(event)">
-      <div class="fg"><label>Your name</label><select id="a-you"><option value="">Select your name…</option></select></div>
-      <div class="fg"><label>Opponent's name</label><select id="a-opp"><option value="">Select opponent…</option></select></div>
-      <div class="frow">
-        <div class="fg"><label>Round</label>
-          <select id="a-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
-        </div>
-        <div class="fg"><label>Date &amp; time</label><input id="a-dt" type="datetime-local" required></div>
-        <div class="fg"><label>Court number</label><select id="a-court"><option value="">Not yet confirmed</option><option>Court 1</option><option>Court 2</option><option>Court 3</option><option>Court 4</option><option>Court 5</option><option>Court 6</option><option>Court 7</option></select></div>
-      </div>
-      <button type="submit" class="btn btn-g">✓ Notify Anthony</button>
-    </form>
-    <div class="hint">Let us know once you've sorted a date and Anthony will add it to the Schedule. Any questions, contact Anthony at squashcoordinator@coolhurst.co.uk</div>
-    <div class="ok" id="a-ok">✓ Submitted! Anthony will add it to the Schedule.</div>
-    <div id="a-err" style="display:none;color:#c0392b;font-size:13px;margin-top:8px;padding:8px;background:#fdf0ef;border-radius:6px"></div>
+    <div class="card-ttl">Arrange a Match</div>
+    <div class="card-sub">Select your round and name — your opponent will be filled in automatically.</div>
+    <div class="form-group">
+      <label>Round</label>
+      <select id="arr-round" onchange="onRoundChange('arr')">
+        <option value="Round 1">Round 1</option>
+        <option value="Round 2">Round 2</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Your Name</label>
+      <select id="arr-you" onchange="onPlayerChange('arr')">
+        <option value="">— select your name —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Opponent</label>
+      <input type="text" id="arr-opp" readonly placeholder="Auto-filled from draw" style="background:#f0f0ee;color:var(--sub)">
+    </div>
+    <div class="form-group">
+      <label>Date &amp; Time</label>
+      <input type="datetime-local" id="arr-when">
+    </div>
+    <div class="form-group">
+      <label>Court (optional)</label>
+      <input type="text" id="arr-court" placeholder="e.g. Court 3">
+    </div>
+    <button class="btn btn-g" onclick="submitArrange()">Submit</button>
+    <div class="msg" id="arr-msg"></div>
   </div>
 </div>
 
-<!-- ═══ RESULT ═══ -->
+<!-- RESULT TAB -->
 <div id="p-result" class="panel">
   <div class="card">
-    <div class="card-ttl">Submit a Result</div>
-    <div class="card-sub">Post your score once your match is done. Anthony will update the draw and issue next-round starting scores.</div>
-    <form id="rf" onsubmit="submitResult(event)">
-      <div class="fg"><label>Your name</label><select id="r-you"><option value="">Select your name…</option></select></div>
-      <div class="fg"><label>Opponent's name</label><select id="r-opp"><option value="">Select opponent…</option></select></div>
-      <div class="fg"><label>Round</label>
-        <select id="r-rnd" required><option value="">Select…</option><option>Round 1</option><option>Round 2</option><option>Round 3</option><option>Last 16</option><option>Quarter Final</option><option>Semi Final</option><option>Final</option></select>
+    <div class="card-ttl">Submit Result</div>
+    <div class="card-sub">Select your round and name — your opponent will be filled in automatically.</div>
+    <div class="wo-toggle">
+      <button class="on" id="wo-no" onclick="setWo(false)">Match Played</button>
+      <button id="wo-yes" onclick="setWo(true)">Walkover</button>
+    </div>
+    <div class="form-group">
+      <label>Round</label>
+      <select id="res-round" onchange="onRoundChange('res')">
+        <option value="Round 1">Round 1</option>
+        <option value="Round 2">Round 2</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Your Name</label>
+      <select id="res-you" onchange="onPlayerChange('res')">
+        <option value="">— select your name —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Opponent</label>
+      <input type="text" id="res-opp" readonly placeholder="Auto-filled from draw" style="background:#f0f0ee;color:var(--sub)">
+    </div>
+    <div id="score-fields">
+      <div class="form-group">
+        <label>Winner</label>
+        <select id="res-winner">
+          <option value="">— select —</option>
+        </select>
       </div>
-      <div class="fg" style="display:flex;align-items:center;gap:10px;padding:8px 0 4px">
-        <input type="checkbox" id="r-wo" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0" onchange="toggleWoMode(this.checked)">
-        <label for="r-wo" style="font-size:13px;font-weight:600;color:var(--fg);text-transform:none;letter-spacing:0;cursor:pointer;margin:0">This is a walkover (no match played)</label>
+      <div class="form-group">
+        <label>Score (winner's games – loser's games)</label>
+        <input type="text" id="res-score" placeholder="e.g. 3–1">
       </div>
-      <div id="r-scores">
-        <div class="frow">
-          <div class="fg"><label>Your score</label><input id="r-ys" type="number" placeholder="100" min="0" max="200" required></div>
-          <div class="fg"><label>Opponent score</label><input id="r-os" type="number" placeholder="84" min="0" max="200" required></div>
-        </div>
-      </div>
-      <div id="r-wo-winner" style="display:none">
-        <div class="fg"><label>Who advances?</label>
-          <select id="r-winner-sel"><option value="">Select…</option></select>
-        </div>
-      </div>
-      <div class="fg"><label>Notes (optional)</label><textarea id="r-notes" rows="2" placeholder="e.g. great match, went to 99-99!"></textarea></div>
-      <button type="submit" class="btn btn-a">Submit result</button>
-    </form>
-    <div class="hint">Submit your score once your match is done — Anthony will verify and update the draw. Any questions, contact Anthony at squashcoordinator@coolhurst.co.uk</div>
-    <div class="ok" id="r-ok">✓ Result submitted! Anthony will approve and update the draw shortly.</div>
+    </div>
+    <div class="form-group" id="wo-reason-wrap" style="display:none">
+      <label>Who advances? (walkover winner)</label>
+      <select id="wo-winner">
+        <option value="">— select —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="res-notes" placeholder="Any additional info…"></textarea>
+    </div>
+    <button class="btn btn-a" onclick="submitResult()">Submit Result</button>
+    <div class="msg" id="res-msg"></div>
   </div>
 </div>
 
@@ -302,7 +347,31 @@ const R1 = [
   ["Stephen Morley",80,"Thomas Horncastle",20]
 ];
 const R2 = [
-  ["Brian Rohan",76,"Daniel Ambrose",24]
+  ["Damien Patel",8,"Alex Burden",92],
+  ["Brian Rohan",76,"Daniel Ambrose",24],
+  ["Idan Caspi",44,"Rowley Sword",56],
+  ["Charlie Logan",69,"Elliot Higgins",41],
+  ["Simon Farrell",83,"Thomas Selway Spencer",17],
+  ["Amy McNay",41,"Lara Yusfin",59],
+  ["Wendy Levin",77,"Philip Rossiter",33],
+  ["Dodo Levin",67,"Hamish Gilder",43],
+  ["Nick Healy",11,"Peter Sweeney",89],
+  ["Jakob von Kalckreuth",38,"Jimmy Ayad",72],
+  ["Chris Henley",41,"Dylan Rice",69],
+  ["John Hart",43,"Georgina Brown",67],
+  ["Adam Twinn",47,"Daniel Pang",63],
+  ["James Ayliffe",79,"James Wilson",21],
+  ["Anthony Belcher",65,"Chris Pendlebury",45],
+  ["Ramon Bloomberg",38,"James Brindle",72],
+  ["Mike Dalton",76,"Steph Highwood",24], 
+  ["John Punter",71,"Nathan Bigaignon",39], 
+  ["Ashley Marshall",40,"Martyna Blass",60],
+  ["Tom Wills",65,"Yoav Caspi",45],
+  ["Ajay Duggal",84,"David Sunley",16],
+  ["Carlo Cresto-Dina",73,"Annette Caseley Chapman",37],
+  ["Jon Neill",37,"Sean Bartlett",63],
+  ["Wills McGuigan",46,"Paul Davies",64],
+  ["Duncan Rowden",75,"Thomas Horncastle",25],
 ];
 const BYES = ["Damien Patel","Daniel Ambrose","Idan Caspi","Elliot Higgins",
   "Simon Farrell","Philip Rossiter","Dick Bowman","Nathan Bigaignon",
@@ -559,79 +628,83 @@ function filterDraw(q){
 }
 
 // ─── SUBMIT ARRANGE ───
-async function submitArrange(e){
-  e.preventDefault();
-  const you = document.getElementById('a-you').value.trim();
-  const opp = document.getElementById('a-opp').value.trim();
-  const rnd = document.getElementById('a-rnd').value;
-  if(!you || !opp || !rnd){ alert('Please fill in your name, opponent and round.'); return; }
-  const dt    = document.getElementById('a-dt').value;
-  const court = document.getElementById('a-court').value;
+async function submitArrange(){
+  const you = document.getElementById('arr-you').value.trim();
+  const opp = document.getElementById('arr-opp').value.trim();
+  const rnd = document.getElementById('arr-round').value;
+  if(!you || !opp){ alert('Please select your name (opponent will fill automatically).'); return; }
+  const dt    = document.getElementById('arr-when').value;
+  const court = document.getElementById('arr-court').value;
   const when  = dt ? new Date(dt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '(TBC)';
 
-  const btn = e.target.querySelector('button[type=submit]');
+  const btn = document.querySelector('#p-arrange .btn');
+  const msgEl = document.getElementById('arr-msg');
   btn.disabled = true; btn.textContent = 'Sending…';
-  const errEl = document.getElementById('a-err');
-  errEl.style.display='none';
+  msgEl.style.display='none';
   try {
     await fetch(SCRIPT_URL, {
       method:'POST',
       mode:'no-cors',
       body: JSON.stringify({action:'arrange', you, opp, round:rnd, when, court})
     });
-    document.getElementById('a-ok').style.display='block';
-    document.getElementById('af').reset();
+    msgEl.textContent = '✓ Sent! Anthony will confirm the arrangement.';
+    msgEl.style.display='block';
+    document.getElementById('arr-when').value = '';
+    document.getElementById('arr-court').value = '';
   } catch(err){
-    errEl.textContent = 'Error: '+err.message;
-    errEl.style.display='block';
+    msgEl.textContent = 'Error: '+err.message;
+    msgEl.style.display='block';
   }
-  btn.disabled = false; btn.textContent = '✓ Notify Anthony';
+  btn.disabled = false; btn.textContent = 'Submit';
 }
 
 // ─── WALKOVER TOGGLE ───
-function toggleWoMode(on) {
-  document.getElementById('r-scores').style.display = on ? 'none' : '';
-  document.getElementById('r-wo-winner').style.display = on ? '' : 'none';
-  document.getElementById('r-ys').required = !on;
-  document.getElementById('r-os').required = !on;
-  if(on) {
-    document.getElementById('r-ys').value = '';
-    document.getElementById('r-os').value = '';
-  }
+let _isWo = false;
+function setWo(on) {
+  _isWo = on;
+  document.getElementById('wo-no').classList.toggle('on', !on);
+  document.getElementById('wo-yes').classList.toggle('on', on);
+  document.getElementById('score-fields').style.display = on ? 'none' : '';
+  document.getElementById('wo-reason-wrap').style.display = on ? '' : 'none';
 }
 
 // ─── SUBMIT RESULT ───
-async function submitResult(e){
-  e.preventDefault();
-  const you   = document.getElementById('r-you').value.trim();
-  const opp   = document.getElementById('r-opp').value.trim();
-  const rnd   = document.getElementById('r-rnd').value;
-  if(!you || !opp || !rnd){ alert('Please fill in your name, opponent and round.'); return; }
-  const isWo  = document.getElementById('r-wo').checked;
-  const notes = document.getElementById('r-notes').value.trim();
+async function submitResult(){
+  const you   = document.getElementById('res-you').value.trim();
+  const opp   = document.getElementById('res-opp').value.trim();
+  const rnd   = document.getElementById('res-round').value;
+  if(!you || !opp){ alert('Please select your name (opponent will fill automatically).'); return; }
+  const notes = document.getElementById('res-notes').value.trim();
 
-  const btn = e.target.querySelector('button[type=submit]');
+  const btn = document.querySelector('#p-result .btn');
+  const msgEl = document.getElementById('res-msg');
   btn.disabled = true; btn.textContent = 'Sending…';
 
   let payload;
-  if(isWo) {
-    const winner = document.getElementById('r-winner-sel').value;
-    if(!winner){ alert('Please select who advances.'); btn.disabled=false; btn.textContent='Submit result'; return; }
+  if(_isWo) {
+    const winner = document.getElementById('wo-winner').value;
+    if(!winner){ alert('Please select who advances.'); btn.disabled=false; btn.textContent='Submit Result'; return; }
     payload = {action:'walkover', you, opp, round:rnd, winner, notes};
   } else {
-    const ys = document.getElementById('r-ys').value;
-    const os = document.getElementById('r-os').value;
-    const winner = parseInt(ys)>parseInt(os) ? you : opp;
-    payload = {action:'result', you, opp, round:rnd, yourScore:ys, oppScore:os, winner, notes};
+    const winner = document.getElementById('res-winner').value;
+    const score  = document.getElementById('res-score').value;
+    if(!winner){ alert('Please select the winner.'); btn.disabled=false; btn.textContent='Submit Result'; return; }
+    payload = {action:'result', you, opp, round:rnd, winner, score, notes};
   }
 
   try {
     await fetch(SCRIPT_URL, {method:'POST', mode:'no-cors', body: JSON.stringify(payload)});
   } catch(err){}
-  document.getElementById('r-ok').style.display='block';
-  document.getElementById('rf').reset();
-  toggleWoMode(false);
-  btn.disabled = false; btn.textContent = 'Submit result';
+  msgEl.textContent = '✓ Result submitted — Anthony will confirm.';
+  msgEl.style.display='block';
+  // reset dropdowns
+  document.getElementById('res-you').value = '';
+  document.getElementById('res-opp').value = '';
+  document.getElementById('res-score').value = '';
+  document.getElementById('res-notes').value = '';
+  setWo(false);
+  updateWinnerDropdown();
+  btn.disabled = false; btn.textContent = 'Submit Result';
 }
 
 // ─── LOAD BOARD FROM SHEET ───
@@ -730,60 +803,62 @@ document.getElementById('t-board').addEventListener('click', loadBoard);
 // Load arranged index on page load so draw shows badges
 loadArrangedIndex();
 
-// ─── PLAYER LIST FOR FORMS ───
-const ALL_PLAYERS = [...new Set(R1.flatMap(m=>[m[0],m[2]]))].sort();
+// ─── ROUND-AWARE FORM HELPERS ───
+function playersForRound(round) {
+  const arr = round === 'Round 2' ? R2 : R1;
+  const set = new Set();
+  arr.forEach(m => { set.add(m[0]); set.add(m[2]); });
+  return [...set].sort();
+}
 
-function populateSelect(id, players) {
-  const sel = document.getElementById(id);
-  const current = sel.value;
-  // keep first placeholder option
-  while(sel.options.length > 1) sel.remove(1);
-  players.forEach(p => {
-    const o = document.createElement('option');
-    o.value = o.textContent = p;
-    sel.appendChild(o);
+function opponentFor(name, round) {
+  const arr = round === 'Round 2' ? R2 : R1;
+  const lc = name.toLowerCase().trim();
+  for (const m of arr) {
+    if (m[0].toLowerCase() === lc) return m[2];
+    if (m[2].toLowerCase() === lc) return m[0];
+  }
+  return '';
+}
+
+function onRoundChange(prefix) {
+  const round = document.getElementById(prefix === 'arr' ? 'arr-round' : 'res-round').value;
+  const players = playersForRound(round);
+  const youId = prefix === 'arr' ? 'arr-you' : 'res-you';
+  const oppId = prefix === 'arr' ? 'arr-opp' : 'res-opp';
+  const sel = document.getElementById(youId);
+  sel.innerHTML = '<option value="">— select your name —</option>'
+    + players.map(p => `<option value="${p}">${p}</option>`).join('');
+  document.getElementById(oppId).value = '';
+  if (prefix === 'res') updateWinnerDropdown();
+}
+
+function onPlayerChange(prefix) {
+  const roundId = prefix === 'arr' ? 'arr-round' : 'res-round';
+  const youId   = prefix === 'arr' ? 'arr-you'   : 'res-you';
+  const oppId   = prefix === 'arr' ? 'arr-opp'   : 'res-opp';
+  const round = document.getElementById(roundId).value;
+  const name  = document.getElementById(youId).value;
+  const opp   = opponentFor(name, round);
+  document.getElementById(oppId).value = opp;
+  if (prefix === 'res') updateWinnerDropdown();
+}
+
+function updateWinnerDropdown() {
+  const you = document.getElementById('res-you') ? document.getElementById('res-you').value.trim() : '';
+  const opp = document.getElementById('res-opp') ? document.getElementById('res-opp').value.trim() : '';
+  ['res-winner', 'wo-winner'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— select —</option>';
+    if (you) sel.innerHTML += `<option value="${you}">${you}</option>`;
+    if (opp) sel.innerHTML += `<option value="${opp}">${opp}</option>`;
   });
-  if(current) sel.value = current;
 }
 
 function initForms() {
-  ['a-you','a-opp','r-you','r-opp'].forEach(id => populateSelect(id, ALL_PLAYERS));
-
-  // When 'you' changes on arrange form, filter opponent to R1 partner
-  document.getElementById('a-you').addEventListener('change', function(){
-    const you = this.value;
-    const match = R1.find(m => m[0]===you || m[2]===you);
-    const oppSel = document.getElementById('a-opp');
-    if(match) {
-      const opp = match[0]===you ? match[2] : match[0];
-      oppSel.value = opp;
-    } else {
-      oppSel.value = '';
-    }
-  });
-
-  // Same for result form — also update walkover winner dropdown
-  function updateResultWoWinner() {
-    const you = document.getElementById('r-you').value;
-    const opp = document.getElementById('r-opp').value;
-    const winSel = document.getElementById('r-winner-sel');
-    winSel.innerHTML = '<option value="">Select…</option>';
-    if(you) winSel.add(new Option(you, you));
-    if(opp && opp !== you) winSel.add(new Option(opp, opp));
-  }
-  document.getElementById('r-you').addEventListener('change', function(){
-    const you = this.value;
-    const match = R1.find(m => m[0]===you || m[2]===you);
-    const oppSel = document.getElementById('r-opp');
-    if(match) {
-      const opp = match[0]===you ? match[2] : match[0];
-      oppSel.value = opp;
-    } else {
-      oppSel.value = '';
-    }
-    updateResultWoWinner();
-  });
-  document.getElementById('r-opp').addEventListener('change', updateResultWoWinner);
+  onRoundChange('arr');
+  onRoundChange('res');
 }
 
 // Fix timestamp display — handle ISO strings from sheet
