@@ -237,7 +237,16 @@ body {
     </div>
     <div class="form-group">
       <label>Court (optional)</label>
-      <input type="text" id="arr-court" placeholder="e.g. Court 3">
+      <select id="arr-court">
+        <option value="">— select court —</option>
+        <option>Court 1</option>
+        <option>Court 2</option>
+        <option>Court 3</option>
+        <option>Court 4</option>
+        <option>Court 5</option>
+        <option>Court 6</option>
+        <option>Court 7</option>
+      </select>
     </div>
     <button class="btn btn-g" onclick="submitArrange()">Submit</button>
     <div class="msg" id="arr-msg"></div>
@@ -277,9 +286,15 @@ body {
           <option value="">— select —</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Score (winner's games – loser's games)</label>
-        <input type="text" id="res-score" placeholder="e.g. 3–1">
+      <div class="frow">
+        <div class="form-group">
+          <label>Your Score</label>
+          <input type="number" id="res-your-score" min="0" max="5" placeholder="e.g. 3">
+        </div>
+        <div class="form-group">
+          <label>Opponent Score</label>
+          <input type="number" id="res-opp-score" min="0" max="5" placeholder="e.g. 1">
+        </div>
       </div>
     </div>
     <div class="form-group" id="wo-reason-wrap" style="display:none">
@@ -372,6 +387,8 @@ const R2 = [
   ["Jon Neill",37,"Sean Bartlett",63],
   ["Wills McGuigan",46,"Paul Davies",64],
   ["Duncan Rowden",75,"Thomas Horncastle",25],
+  ["Jonathan Dando",58,"Alexander Jan",52],
+  ["Dick Bowman",21,"Sophie Caruana",79],
 ];
 const BYES = ["Damien Patel","Daniel Ambrose","Idan Caspi","Elliot Higgins",
   "Simon Farrell","Philip Rossiter","Dick Bowman","Nathan Bigaignon",
@@ -686,10 +703,11 @@ async function submitResult(){
     if(!winner){ alert('Please select who advances.'); btn.disabled=false; btn.textContent='Submit Result'; return; }
     payload = {action:'walkover', you, opp, round:rnd, winner, notes};
   } else {
-    const winner = document.getElementById('res-winner').value;
-    const score  = document.getElementById('res-score').value;
+    const winner   = document.getElementById('res-winner').value;
+    const yourScore = document.getElementById('res-your-score').value;
+    const oppScore  = document.getElementById('res-opp-score').value;
     if(!winner){ alert('Please select the winner.'); btn.disabled=false; btn.textContent='Submit Result'; return; }
-    payload = {action:'result', you, opp, round:rnd, winner, score, notes};
+    payload = {action:'result', you, opp, round:rnd, winner, yourScore, oppScore, notes};
   }
 
   try {
@@ -700,7 +718,8 @@ async function submitResult(){
   // reset dropdowns
   document.getElementById('res-you').value = '';
   document.getElementById('res-opp').value = '';
-  document.getElementById('res-score').value = '';
+  document.getElementById('res-your-score').value = '';
+  document.getElementById('res-opp-score').value = '';
   document.getElementById('res-notes').value = '';
   setWo(false);
   updateWinnerDropdown();

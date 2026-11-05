@@ -28,12 +28,19 @@ html, body {
   overflow: hidden;
 }
 
-/* ── LAYOUT ── */
-.screen {
-  display: flex;
+/* ── PANELS ── */
+.panel {
+  display: none;
   flex-direction: column;
   height: 100vh;
-  padding: 0;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.panel.active {
+  display: flex;
+  opacity: 1;
 }
 
 /* ── HEADER ── */
@@ -72,73 +79,37 @@ html, body {
   font-size: 16px; color: var(--fg-2); margin-top: 6px;
 }
 
-/* ── BODY ── */
-.body {
-  flex: 1;
+/* ── PANEL LABEL (shows which screen is active) ── */
+.panel-label {
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 20px 32px;
-  gap: 20px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px 0;
+  flex-shrink: 0;
 }
-
-/* ── SECTION ── */
-.section { display: flex; flex-direction: column; min-height: 0; flex: 1; }
-.sec-hdr {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 12px; flex-shrink: 0;
-}
-.sec-hdr h2 {
-  font-size: 16px; font-weight: 700; letter-spacing: 1.2px;
+.panel-label h2 {
+  font-size: 20px; font-weight: 700; letter-spacing: 1.4px;
   text-transform: uppercase; color: var(--gold);
 }
-.sec-hdr .pill {
+.panel-label .pill {
   background: var(--gold); color: var(--green-dk);
   font-size: 14px; font-weight: 700; border-radius: 20px;
   padding: 2px 10px;
 }
-.sec-line {
+.panel-label-line {
   flex: 1; height: 1px; background: var(--border);
 }
 
-/* ── DRAW GRID ── */
-.draw-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  overflow-y: auto;
-  min-height: 0;
+/* ── SCROLL BODY ── */
+.scroll-body {
   flex: 1;
+  overflow-y: auto;
+  padding: 16px 32px 0;
+  min-height: 0;
 }
-.mc {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.mc.played { border-color: rgba(100,200,120,0.35); background: rgba(60,101,73,0.25); }
-.mc.arranged { border-color: rgba(200,169,81,0.35); background: rgba(200,169,81,0.08); }
-.mc-players {
-  font-size: 17px; font-weight: 600; color: var(--fg);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.mc-players .vs { color: var(--fg-2); font-weight: 400; margin: 0 4px; }
-.mc-chips {
-  font-size: 15px; color: var(--fg-2);
-  font-variant-numeric: tabular-nums;
-}
-.mc-badge {
-  font-size: 13px; font-weight: 600; margin-top: 3px;
-}
-.mc-badge.played { color: #7fd99a; }
-.mc-badge.arranged { color: var(--gold); }
 
 /* ── SCHEDULE ── */
-.oop-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; min-height: 0; flex: 1; }
+.oop-list { display: flex; flex-direction: column; gap: 12px; }
 .oop-item {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -170,7 +141,7 @@ html, body {
 .oop-when { font-size: 17px; color: var(--fg-2); flex-shrink: 0; text-align: right; line-height: 1.4; }
 
 /* ── RESULTS ── */
-.res-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; flex: 1; }
+.res-list { display: flex; flex-direction: column; gap: 10px; }
 .res-item {
   background: rgba(60,101,73,0.2);
   border: 1px solid rgba(100,200,120,0.2);
@@ -215,13 +186,24 @@ html, body {
   50%{ opacity:.4; transform:scale(.7); }
 }
 
+/* ── SCREEN INDICATOR DOTS ── */
+.screen-dots {
+  display: flex; gap: 8px;
+}
+.screen-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.screen-dot.on { background: var(--gold); }
+
 .empty { color: var(--fg-2); font-size: 18px; padding: 12px 0; }
 </style>
 </head>
 <body>
-<div class="screen">
 
-  <!-- HEADER -->
+<!-- PANEL A: SCHEDULE -->
+<div class="panel active" id="panel-schedule">
   <div class="hdr">
     <div class="hdr-badge">GP<br>100</div>
     <div class="hdr-text">
@@ -229,44 +211,59 @@ html, body {
       <p>Coolhurst Tennis &amp; Squash Club · 2026</p>
     </div>
     <div class="hdr-clock">
-      <div class="time" id="clock">--:--</div>
-      <div class="date" id="dateline">--</div>
+      <div class="time clock-display">--:--</div>
+      <div class="date dateline-display">--</div>
     </div>
   </div>
-
-  <!-- BODY -->
-  <div class="body">
-
-    <!-- SCHEDULE -->
-    <div class="section" style="flex:2">
-      <div class="sec-hdr">
-        <h2>Schedule</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="oop-list" id="oop-list">
-        <div class="empty">Loading…</div>
-      </div>
-    </div>
-
-    <!-- RESULTS -->
-    <div class="section" style="flex:1">
-      <div class="sec-hdr">
-        <h2>Results</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="res-list" id="res-list">
-        <div class="empty">No results yet.</div>
-      </div>
-    </div>
-
+  <div class="panel-label">
+    <h2>Upcoming Matches</h2>
+    <span class="pill" id="oop-count">0</span>
+    <div class="panel-label-line"></div>
   </div>
-
-  <!-- FOOTER -->
+  <div class="scroll-body" id="oop-scroll">
+    <div class="oop-list" id="oop-list">
+      <div class="empty">Loading…</div>
+    </div>
+  </div>
   <div class="footer">
-    <span>R1 deadline: 4th November 2026</span>
-    <span class="refresh"><span class="pulse"></span> Live — updates every 5 minutes</span>
+    <span>R2 deadline: 15th November 2026</span>
+    <span style="display:flex;align-items:center;gap:14px">
+      <span class="screen-dots"><span class="screen-dot on" id="dot-0"></span><span class="screen-dot" id="dot-1"></span></span>
+      <span class="refresh"><span class="pulse"></span> Live — updates every 5 minutes</span>
+    </span>
   </div>
+</div>
 
+<!-- PANEL B: RESULTS -->
+<div class="panel" id="panel-results">
+  <div class="hdr">
+    <div class="hdr-badge">GP<br>100</div>
+    <div class="hdr-text">
+      <h1>Gareth Pugh 100</h1>
+      <p>Coolhurst Tennis &amp; Squash Club · 2026</p>
+    </div>
+    <div class="hdr-clock">
+      <div class="time clock-display">--:--</div>
+      <div class="date dateline-display">--</div>
+    </div>
+  </div>
+  <div class="panel-label">
+    <h2>Results</h2>
+    <span class="pill" id="res-count">0</span>
+    <div class="panel-label-line"></div>
+  </div>
+  <div class="scroll-body" id="res-scroll">
+    <div class="res-list" id="res-list">
+      <div class="empty">No results yet.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>R2 deadline: 15th November 2026</span>
+    <span style="display:flex;align-items:center;gap:14px">
+      <span class="screen-dots"><span class="screen-dot" id="dot-0b"></span><span class="screen-dot on" id="dot-1b"></span></span>
+      <span class="refresh"><span class="pulse"></span> Live — updates every 5 minutes</span>
+    </span>
+  </div>
 </div>
 
 <script>
@@ -298,21 +295,46 @@ const R1 = [
   ["Alex Worrall",17,"James Brindle",83],["Tony Hulse",75,"Richard Cartmel",25],
   ["Matt Lyons",39,"Lewis Lenssen",71],["Will Brett",76,"Florie Smith",24],
   ["Anna Wood",88,"Martin Cripps",12],["Duncan Rowden",58,"Paul Giltinan",52],
-  ["Stephen Morley",80,"Thomas Horncastle",20],["Mike Dalton",76,"Steph Highwood",24], 
-  ["John Punter",71,"Nathan Bigaignon",39], ["Ashley Marshall",40,"Martyna Blass",60]
+  ["Stephen Morley",80,"Thomas Horncastle",20]
 ];
 
 const R2 = [
-  ["Brian Rohan",76,"Daniel Ambrose",24]
+  ["Damien Patel",8,"Alex Burden",92],
+  ["Brian Rohan",76,"Daniel Ambrose",24],
+  ["Idan Caspi",44,"Rowley Sword",56],
+  ["Charlie Logan",69,"Elliot Higgins",41],
+  ["Simon Farrell",83,"Thomas Selway Spencer",17],
+  ["Amy McNay",41,"Lara Yusfin",59],
+  ["Wendy Levin",77,"Philip Rossiter",33],
+  ["Dodo Levin",67,"Hamish Gilder",43],
+  ["Nick Healy",11,"Peter Sweeney",89],
+  ["Jakob von Kalckreuth",38,"Jimmy Ayad",72],
+  ["Chris Henley",41,"Dylan Rice",69],
+  ["John Hart",43,"Georgina Brown",67],
+  ["Adam Twinn",47,"Daniel Pang",63],
+  ["James Ayliffe",79,"James Wilson",21],
+  ["Anthony Belcher",65,"Chris Pendlebury",45],
+  ["Ramon Bloomberg",38,"James Brindle",72],
+  ["Mike Dalton",76,"Steph Highwood",24],
+  ["John Punter",71,"Nathan Bigaignon",39],
+  ["Ashley Marshall",40,"Martyna Blass",60],
+  ["Tom Wills",65,"Yoav Caspi",45],
+  ["Ajay Duggal",84,"David Sunley",16],
+  ["Carlo Cresto-Dina",73,"Annette Caseley Chapman",37],
+  ["Jon Neill",37,"Sean Bartlett",63],
+  ["Wills McGuigan",46,"Paul Davies",64],
+  ["Duncan Rowden",75,"Thomas Horncastle",25],
+  ["Jonathan Dando",58,"Alexander Jan",52],
+  ["Dick Bowman",21,"Sophie Caruana",79],
 ];
 
 // ── CLOCK ──
 function tickClock() {
   const now = new Date();
-  document.getElementById('clock').textContent =
-    now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('dateline').textContent =
-    now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const dateStr = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.querySelectorAll('.clock-display').forEach(el => el.textContent = timeStr);
+  document.querySelectorAll('.dateline-display').forEach(el => el.textContent = dateStr);
 }
 tickClock();
 setInterval(tickClock, 1000);
@@ -341,7 +363,6 @@ async function loadData() {
     const resp = await fetch(SCRIPT_URL + '?action=draw&t=' + Date.now());
     const data = await resp.json();
 
-    // Build indexes
     arrangedIndex = {};
     (data.arranged||[]).filter(a=>a.approved).forEach(a => {
       arrangedIndex[makeKey(a.you, a.opp)] = a;
@@ -355,40 +376,6 @@ async function loadData() {
     renderResults(data);
   } catch(e) {
     console.error('Data load failed', e);
-  }
-}
-
-// ── DRAW ──
-function renderMatchList(matches, gridEl) {
-  gridEl.innerHTML = matches.map(m => {
-    const [p1,s1,p2,s2] = m;
-    const key = makeKey(p1,p2);
-    const res = resultsIndex[key];
-    const arr = arrangedIndex[key];
-    let cls = '', badge = '';
-    if (res && res.walkover) {
-      cls = 'played';
-      badge = `<div class="mc-badge played">🚶 W/O — ${res.winner} advances</div>`;
-    } else if (res) {
-      cls = 'played';
-      badge = `<div class="mc-badge played">✅ ${res.winner} ${res.playerScore}–${res.oppScore}</div>`;
-    } else if (arr) {
-      cls = 'arranged';
-      badge = `<div class="mc-badge arranged">📅 ${fmtWhen(arr.when)}${arr.court ? ' · '+arr.court : ''}</div>`;
-    }
-    return `<div class="mc ${cls}">
-      <div class="mc-players">${p1} <span class="vs">v</span> ${p2}</div>
-      <div class="mc-chips">${s1} – ${s2}</div>
-      ${badge}
-    </div>`;
-  }).join('');
-}
-
-function renderDraw() {
-  renderMatchList(R1, document.getElementById('draw-grid'));
-  if (R2.length > 0) {
-    document.getElementById('r2-section').style.display = '';
-    renderMatchList(R2, document.getElementById('draw-grid-r2'));
   }
 }
 
@@ -413,6 +400,7 @@ function renderOOP(data) {
       const tb = b.when ? new Date(b.when).getTime() : Infinity;
       return ta - tb;
     });
+  document.getElementById('oop-count').textContent = approved.length;
   if (!approved.length) {
     el.innerHTML = '<div class="empty">No upcoming matches scheduled — check back soon.</div>';
     return;
@@ -428,14 +416,17 @@ function renderOOP(data) {
       <div class="oop-when">${fmtWhen(a.when)}${a.court ? '<br>'+a.court : ''}</div>
     </div>`;
   }).join('');
+  // Reset scroll to top whenever fresh data arrives
+  document.getElementById('oop-scroll').scrollTop = 0;
 }
 
 // ── RESULTS ──
 function renderResults(data) {
   const el = document.getElementById('res-list');
   const results = data.results||[];
+  document.getElementById('res-count').textContent = results.length;
   if (!results.length) {
-    el.innerHTML = '<div class="empty">No results yet — R1 deadline 4th November.</div>';
+    el.innerHTML = '<div class="empty">No results yet — R2 deadline 15th November.</div>';
     return;
   }
   el.innerHTML = results.map(r => r.walkover ? `
@@ -455,11 +446,99 @@ function renderResults(data) {
       </div>
       <div class="res-score">${r.playerScore}–${r.oppScore}</div>
     </div>`).join('');
+  // Reset scroll to top whenever fresh data arrives
+  document.getElementById('res-scroll').scrollTop = 0;
 }
 
 // ── INIT & AUTO-REFRESH ──
 loadData();
-setInterval(loadData, 5 * 60 * 1000); // every 5 minutes
+setInterval(loadData, 5 * 60 * 1000);
+
+// ── AUTO-SCROLL ──
+(function() {
+  const SCROLL_SPEED    = 1;    // px per tick
+  const TICK_MS         = 40;   // ~25 fps
+  const PAUSE_AT_TOP    = 3000; // ms to hold at top before scrolling
+  const PAUSE_AT_BOTTOM = 2500; // ms to hold at bottom before resetting
+
+  function makeScroller(scrollId) {
+    let pausing = false;
+    let pauseTimer = null;
+
+    pausing = true;
+    pauseTimer = setTimeout(() => { pausing = false; }, PAUSE_AT_TOP);
+
+    return function tick() {
+      const el = document.getElementById(scrollId);
+      if (!el || pausing) return;
+      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+      if (atBottom) {
+        pausing = true;
+        pauseTimer = setTimeout(() => {
+          el.scrollTop = 0;
+          setTimeout(() => { pausing = false; }, PAUSE_AT_TOP);
+        }, PAUSE_AT_BOTTOM);
+      } else {
+        el.scrollTop += SCROLL_SPEED;
+      }
+    };
+  }
+
+  const tickOOP = makeScroller('oop-scroll');
+  const tickRes = makeScroller('res-scroll');
+  setInterval(tickOOP, TICK_MS);
+  setInterval(tickRes, TICK_MS);
+})();
+
+// ── PANEL SWITCHER ──
+(function() {
+  const DISPLAY_DURATION = 20000; // ms each panel stays visible
+  const FADE_MS          = 600;   // must match CSS transition
+
+  const panels = ['panel-schedule', 'panel-results'];
+  const dotPairs = [
+    ['dot-0', 'dot-1'],    // dots on schedule panel
+    ['dot-0b', 'dot-1b'],  // dots on results panel
+  ];
+  let current = 0;
+
+  function showPanel(idx) {
+    // Fade out current
+    const oldPanel = document.getElementById(panels[current]);
+    oldPanel.style.opacity = '0';
+    setTimeout(() => {
+      oldPanel.classList.remove('active');
+      oldPanel.style.opacity = '';
+
+      // Show new
+      current = idx;
+      const newPanel = document.getElementById(panels[current]);
+      newPanel.classList.add('active');
+      newPanel.style.opacity = '0';
+      // Force reflow then fade in
+      void newPanel.offsetWidth;
+      newPanel.style.opacity = '1';
+
+      // Reset that panel's scroll to top on switch
+      const scrollIds = ['oop-scroll', 'res-scroll'];
+      const scrollEl = document.getElementById(scrollIds[current]);
+      if (scrollEl) scrollEl.scrollTop = 0;
+
+      // Update dots on BOTH panels so they're always correct when visible
+      dotPairs.forEach(([d0, d1]) => {
+        const dot0 = document.getElementById(d0);
+        const dot1 = document.getElementById(d1);
+        if (!dot0 || !dot1) return;
+        if (current === 0) { dot0.classList.add('on'); dot1.classList.remove('on'); }
+        else               { dot0.classList.remove('on'); dot1.classList.add('on'); }
+      });
+    }, FADE_MS);
+  }
+
+  setInterval(() => {
+    showPanel((current + 1) % panels.length);
+  }, DISPLAY_DURATION);
+})();
 </script>
 </body>
 </html>
