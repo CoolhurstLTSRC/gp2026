@@ -412,8 +412,17 @@ function getScores(p1, p2) {
 function renderOOP(data) {
   const el = document.getElementById('oop-list');
   const played = new Set((data.results||[]).map(r => makeKey(r.player, r.opp)));
+  const now = Date.now();
   const approved = (data.arranged||[])
-    .filter(a => a.approved && !played.has(makeKey(a.you, a.opp)))
+    .filter(a => {
+      if (!a.approved) return false;
+      if (played.has(makeKey(a.you, a.opp))) return false;
+      if (a.when) {
+        const t = new Date(a.when).getTime();
+        if (!isNaN(t) && t < now - 2 * 60 * 60 * 1000) return false; // hide if >2hrs in the past
+      }
+      return true;
+    })
     .sort((a, b) => {
       const ta = a.when ? new Date(a.when).getTime() : Infinity;
       const tb = b.when ? new Date(b.when).getTime() : Infinity;
@@ -442,10 +451,10 @@ function renderOOP(data) {
 // ── RESULTS ──
 function renderResults(data) {
   const el = document.getElementById('res-list');
-  const results = data.results||[];
+  const results = (data.results||[]).slice().reverse();
   document.getElementById('res-count').textContent = results.length;
   if (!results.length) {
-    el.innerHTML = '<div class="empty">No results yet — R2 deadline 15th November.</div>';
+    el.innerHTML = '<div class="empty">No results yet — R3 deadline 24th November.</div>';
     return;
   }
   el.innerHTML = results.map(r => r.walkover ? `
