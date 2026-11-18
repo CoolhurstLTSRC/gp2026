@@ -822,7 +822,7 @@ async function loadBoard(){
     if(!data.results || data.results.length===0){
       rOut.innerHTML = '<div class="empty"><div class="ico">🎾</div>No results yet — first round deadline is 4th November.</div>';
     } else {
-      rOut.innerHTML = data.results.map(r=> r.walkover ? `
+      rOut.innerHTML = (data.results).slice().reverse().map(r=> r.walkover ? `
         <div class="result-item">
           <span class="result-round">${r.round}</span>
           <div class="result-match">
