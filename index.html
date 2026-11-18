@@ -790,8 +790,17 @@ async function loadBoard(){
     // Arranged — only approved, unplayed ones; sorted by date
     const aOut = document.getElementById('arranged-out');
     const playedKeys = new Set((data.results||[]).map(r=>makeKey(r.player,r.opp)));
+    const nowTs = Date.now();
     const approvedArr = (data.arranged||[])
-      .filter(a=>a.approved && !playedKeys.has(makeKey(a.you,a.opp)))
+      .filter(a=>{
+        if(!a.approved) return false;
+        if(playedKeys.has(makeKey(a.you,a.opp))) return false;
+        if(a.when){
+          const t = new Date(a.when).getTime();
+          if(!isNaN(t) && t < nowTs - 2 * 60 * 60 * 1000) return false;
+        }
+        return true;
+      })
       .sort((a,b)=>{
         const ta = a.when ? new Date(a.when).getTime() : Infinity;
         const tb = b.when ? new Date(b.when).getTime() : Infinity;
